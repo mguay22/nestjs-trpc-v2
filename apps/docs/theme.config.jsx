@@ -41,7 +41,7 @@ export default {
   },
   useNextSeoProps() {
     return {
-      defaultTitle: "NestJS-tRPC: Bringing type-safety to NestJS",
+      defaultTitle: "NestJS-tRPC v2: Bringing type-safety to NestJS",
       additionalLinkTags: [
         {
           rel: "apple-touch-icon",
@@ -81,7 +81,7 @@ export default {
         },
         {
           property: "og:title",
-          content: "NestJS-tRPC: Bringing type-safety to NestJS",
+          content: "NestJS-tRPC v2: Bringing type-safety to NestJS",
         },
         {
           property: "og:description",
@@ -95,7 +95,7 @@ export default {
         },
         {
           property: "og:site_name",
-          content: "NestJS-tRPC: Bringing type-safety to NestJS",
+          content: "NestJS-tRPC v2: Bringing type-safety to NestJS",
         },
         {
           property: "og:url",
@@ -111,11 +111,11 @@ export default {
         },
         {
           name: "twitter:title",
-          content: "NestJS-tRPC: Bringing type-safety to NestJS",
+          content: "NestJS-tRPC v2: Bringing type-safety to NestJS",
         },
         {
           name: "twitter:description",
-          content: "NestJS-tRPC: Bringing type-safety to NestJS",
+          content: "NestJS-tRPC v2: Bringing type-safety to NestJS",
         },
       ],
     };
