@@ -2,7 +2,7 @@
   "name": "nestjs-trpc-v2",
   "version": "0.0.6",
   "description": "A maintained fork of nestjs-trpc - End-to-end typesafe APIs with tRPC in NestJS",
-  "homepage": "https://github.com/mguay22/nestjs-trpc-v2#readme",
+  "homepage": "https://nestjs-trpc-v2.io",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",

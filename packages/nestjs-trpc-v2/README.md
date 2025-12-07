@@ -1,4 +1,4 @@
-<a href="https://nestjs-trpc.io/" target="_blank" rel="noopener">
+<a href="https://nestjs-trpc-v2.io/" target="_blank" rel="noopener">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/JvsOXCg.png" />
     <img alt="tRPC" src="https://i.imgur.com/JvsOXCg.png" />

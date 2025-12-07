@@ -1,9 +1,9 @@
-import { RootConfigTypes } from '@trpc/server/dist/core/internals/config';
-import { ErrorFormatter } from '@trpc/server/dist/error/formatter';
-import { TRPCErrorShape } from '@trpc/server/dist/rpc';
-import { TRPCContext } from './context.interface';
-import type { Class } from 'type-fest';
-import { ZodTypeAny } from 'zod';
+import { RootConfigTypes } from "@trpc/server/dist/core/internals/config";
+import { ErrorFormatter } from "@trpc/server/dist/error/formatter";
+import { TRPCErrorShape } from "@trpc/server/dist/rpc";
+import { TRPCContext } from "./context.interface";
+import type { Class } from "type-fest";
+import { ZodTypeAny } from "zod";
 
 export type SchemaImports =
   | ((...args: Array<unknown>) => unknown)
@@ -37,7 +37,7 @@ export interface TRPCModuleOptions {
   /**
    * The exposed trpc options when creating a route with either `createExpressMiddleware` or `createFastifyMiddleware`.
    * If not provided, the adapter will use a default createContext.
-   * @link https://nestjs-trpc.io/docs/context
+   * @link https://nestjs-trpc-v2.io/docs/context
    */
   context?: Class<TRPCContext>;
 
@@ -46,7 +46,7 @@ export interface TRPCModuleOptions {
    * @link https://trpc.io/docs/error-formatting
    */
   errorFormatter?: ErrorFormatter<
-    RootConfigTypes['ctx'],
+    RootConfigTypes["ctx"],
     TRPCErrorShape<number> & { [key: string]: any }
   >;
 
@@ -54,5 +54,5 @@ export interface TRPCModuleOptions {
    * Use a data transformer
    * @link https://trpc.io/docs/data-transformers
    */
-  transformer?: RootConfigTypes['transformer'];
+  transformer?: RootConfigTypes["transformer"];
 }

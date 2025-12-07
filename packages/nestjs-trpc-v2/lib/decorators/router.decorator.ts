@@ -1,6 +1,6 @@
-import { applyDecorators, SetMetadata } from '@nestjs/common';
-import { ROUTER_METADATA_KEY } from '../trpc.constants';
-import { FileScanner } from '../scanners/file.scanner';
+import { applyDecorators, SetMetadata } from "@nestjs/common";
+import { ROUTER_METADATA_KEY } from "../trpc.constants";
+import { FileScanner } from "../scanners/file.scanner";
 
 const fileScanner = new FileScanner();
 
@@ -16,13 +16,13 @@ const fileScanner = new FileScanner();
  * @param {object} args configuration object specifying:
  * - `alias` - string that defines a router alias. The alias is used both in the auto schema file generation, and for the actual api access.
  *
- * @see [Routers](https://nestjs-trpc.io/docs/routers)
+ * @see [Routers](https://nestjs-trpc-v2.io/docs/routers)
  *
  * @publicApi
  */
 export function Router(args?: { alias?: string }): ClassDecorator {
   const path = fileScanner.getCallerFilePath();
   return applyDecorators(
-    ...[SetMetadata(ROUTER_METADATA_KEY, { alias: args?.alias, path })],
+    ...[SetMetadata(ROUTER_METADATA_KEY, { alias: args?.alias, path })]
   );
 }

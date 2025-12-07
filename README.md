@@ -1,4 +1,4 @@
-<a href="https://nestjs-trpc.io/" target="_blank" rel="noopener">
+<a href="https://nestjs-trpc-v2.io/" target="_blank" rel="noopener">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/JvsOXCg.png" />
     <img alt="tRPC" src="https://i.imgur.com/JvsOXCg.png" />
@@ -125,7 +125,7 @@ class UserRouter {
 }
 ```
 
-**👉 For more examples and detailed documentation, see [NestJS-tRPC.io](https://nestjs-trpc.io/docs). 👈**
+**👉 For more examples and detailed documentation, see [NestJS-tRPC.io](https://nestjs-trpc-v2.io/docs). 👈**
 
 > **Note**: The original documentation site is maintained by Kevin Edry. This fork maintains API compatibility with the original library.
 
@@ -241,7 +241,7 @@ MIT - See [LICENSE](LICENSE) file for details.
 
 For questions or support:
 
-- 📖 [Documentation](https://nestjs-trpc.io/docs) (original docs, still applicable)
+- 📖 [Documentation](https://nestjs-trpc-v2.io/docs) (original docs, still applicable)
 - 🐛 [Report Issues](https://github.com/mguay22/nestjs-trpc-v2/issues)
 - 💬 [Discussions](https://github.com/mguay22/nestjs-trpc-v2/discussions)
 - 🔗 [Original Repository](https://github.com/KevinEdry/nestjs-trpc)

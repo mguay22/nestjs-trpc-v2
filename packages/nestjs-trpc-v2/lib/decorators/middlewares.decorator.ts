@@ -1,8 +1,8 @@
-import type { Class, Constructor } from 'type-fest';
-import type { TRPCMiddleware } from '../interfaces';
-import { MIDDLEWARES_KEY } from '../trpc.constants';
-import { isFunction } from 'lodash';
-import { validateEach } from '../utils/validate-each.util';
+import type { Class, Constructor } from "type-fest";
+import type { TRPCMiddleware } from "../interfaces";
+import { MIDDLEWARES_KEY } from "../trpc.constants";
+import { isFunction } from "lodash";
+import { validateEach } from "../utils/validate-each.util";
 
 /**
  * TODO: Generate Return Context Type.
@@ -19,7 +19,7 @@ import { validateEach } from '../utils/validate-each.util';
  * @param middlewares a single middleware instance or class, or a list of comma separated middleware instances
  * or classes.
  *
- * @see [Middlewares](https://nestjs-trpc.io/docs/middlewares)
+ * @see [Middlewares](https://nestjs-trpc-v2.io/docs/middlewares)
  *
  * @publicApi
  */
@@ -29,10 +29,10 @@ export function UseMiddlewares(
   return (
     target: any,
     key?: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>,
+    descriptor?: TypedPropertyDescriptor<any>
   ) => {
     const isMiddlewareValid = (
-      middleware: Constructor<TRPCMiddleware> | Record<string, unknown>,
+      middleware: Constructor<TRPCMiddleware> | Record<string, unknown>
     ) =>
       middleware &&
       (isFunction(middleware) ||
@@ -43,13 +43,13 @@ export function UseMiddlewares(
         target.constructor,
         middlewares,
         isMiddlewareValid,
-        '@UseMiddlewares',
-        'middleware',
+        "@UseMiddlewares",
+        "middleware"
       );
       Reflect.defineMetadata(
         MIDDLEWARES_KEY,
         [...middlewares],
-        descriptor.value,
+        descriptor.value
       );
       return descriptor;
     }
@@ -57,8 +57,8 @@ export function UseMiddlewares(
       target.constructor,
       middlewares,
       isMiddlewareValid,
-      '@UseMiddlewares',
-      'middleware',
+      "@UseMiddlewares",
+      "middleware"
     );
     Reflect.defineMetadata(MIDDLEWARES_KEY, [...middlewares], target);
     return target;
@@ -81,7 +81,7 @@ export function UseMiddlewares(
  * @param middlewares a single middleware instance or class, or a list of comma separated middleware instances
  * or classes.
  *
- * @see [Middlewares](https://nestjs-trpc.io/docs/middlewares)
+ * @see [Middlewares](https://nestjs-trpc-v2.io/docs/middlewares)
  *
  * @publicApi
  */
@@ -91,10 +91,10 @@ export function Middlewares(
   return (
     target: any,
     key?: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>,
+    descriptor?: TypedPropertyDescriptor<any>
   ) => {
     const isMiddlewareValid = (
-      middleware: Constructor<TRPCMiddleware> | Record<string, unknown>,
+      middleware: Constructor<TRPCMiddleware> | Record<string, unknown>
     ) =>
       middleware &&
       (isFunction(middleware) ||
@@ -105,13 +105,13 @@ export function Middlewares(
         target.constructor,
         middlewares,
         isMiddlewareValid,
-        '@Middlewares',
-        'middleware',
+        "@Middlewares",
+        "middleware"
       );
       Reflect.defineMetadata(
         MIDDLEWARES_KEY,
         [...middlewares],
-        descriptor.value,
+        descriptor.value
       );
       return descriptor;
     }
@@ -119,8 +119,8 @@ export function Middlewares(
       target.constructor,
       middlewares,
       isMiddlewareValid,
-      '@Middlewares',
-      'middleware',
+      "@Middlewares",
+      "middleware"
     );
     Reflect.defineMetadata(MIDDLEWARES_KEY, [...middlewares], target);
     return target;

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://nestjs-trpc.io
+Host: https://nestjs-trpc-v2.io
 
 # Sitemaps
-Sitemap: https://nestjs-trpc.io/sitemap.xml
+Sitemap: https://nestjs-trpc-v2.io/sitemap.xml

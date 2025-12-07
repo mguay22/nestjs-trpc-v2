@@ -59,7 +59,7 @@ export default {
         })),
         {
           rel: "canonical",
-          href: "https://nestjs-trpc.io/",
+          href: "https://nestjs-trpc-v2.io/",
         },
       ],
       additionalMetaTags: [
@@ -98,7 +98,7 @@ export default {
         },
         {
           property: "og:url",
-          content: "https://nestjs-trpc.io/",
+          content: "https://nestjs-trpc-v2.io/",
         },
         {
           name: "twitter:card",
@@ -106,7 +106,7 @@ export default {
         },
         {
           name: "twitter:image",
-          content: "https://nestjs-trpc.io/banner.png",
+          content: "https://nestjs-trpc-v2.io/banner.png",
         },
         {
           name: "twitter:title",
