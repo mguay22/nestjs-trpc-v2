@@ -92,7 +92,7 @@ export default function Home() {
       </section>
       <section className={"flex flex-col justify-between gap-5 mt-16"}>
         <div>
-          <h2 className={"text-4xl font-medium"}>Why use NestJS tRPC?</h2>
+          <h2 className={"text-4xl font-medium"}>Why use NestJS tRPC v2?</h2>
           <p className={"text-xl text-subtext"}>
             It&apos;s the best way to write NestJS APIs since the GraphQL
             adapter!

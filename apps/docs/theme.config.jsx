@@ -4,6 +4,7 @@ export default {
   logo: (
     <div className={"md:nx-inline-flex nx-gap-2 nx-items-center nx-font-bold"}>
       <img src={"/logo.png"} alt={"nestjs-trpc logo"} width={40} /> NestJS tRPC
+      v2
     </div>
   ),
   primaryHue: 200,
