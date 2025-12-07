@@ -1,17 +1,13 @@
 {
-  "extends": "../tsconfig.build.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["node"],
-    "experimentalDecorators": true
+    "types": ["node", "jest"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "skipLibCheck": true
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.build.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  "include": ["lib/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/__tests__"]
 }

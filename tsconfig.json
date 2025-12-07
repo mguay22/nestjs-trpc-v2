@@ -15,7 +15,9 @@
     "sourceMap": true,
     "composite": true,
     "incremental": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "exclude": ["node_modules", "dist"]
 }

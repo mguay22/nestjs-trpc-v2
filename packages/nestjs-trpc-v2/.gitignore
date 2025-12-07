@@ -3,6 +3,8 @@ node_modules
 
 # generated types
 /types
+test/e2e/generated
+lib/generators/types
 
 # IDE
 /.idea
@@ -14,7 +16,6 @@ npm-debug.log
 .DS_Store
 
 # examples
-/test
 /coverage
 /.nyc_output
 test-schema.graphql

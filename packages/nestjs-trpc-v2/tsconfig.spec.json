@@ -1,10 +1,21 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../tsconfig.build.json",
   "compilerOptions": {
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "sourceMap": true,
     "outDir": "./dist/tests",
+    "rootDir": ".",
     "types": ["jest", "node"],
-    "emitDecoratorMetadata": true
-  }
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "composite": false,
+    "incremental": false
+  },
+  "include": [
+    "lib/**/__tests__/**/*.ts",
+    "lib/**/*.spec.ts",
+    "test/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

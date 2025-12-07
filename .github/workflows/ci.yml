@@ -46,8 +46,11 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Run tests
-        run: pnpm --filter nestjs-trpc-v2 test || echo "No tests configured yet"
+      - name: Run unit tests
+        run: pnpm --filter nestjs-trpc-v2 test
+
+      - name: Run e2e tests
+        run: pnpm --filter nestjs-trpc-v2 test:e2e
 
       - name: Check types
         run: pnpm check-types || echo "Type checking not configured"

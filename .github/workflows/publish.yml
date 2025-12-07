@@ -35,10 +35,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm build
+        run: pnpm build --filter nestjs-trpc-v2
 
-      - name: Run tests
-        run: pnpm --filter nestjs-trpc-v2 test || echo "Skipping tests"
+      - name: Run unit tests
+        run: pnpm --filter nestjs-trpc-v2 test
+
+      - name: Run e2e tests
+        run: pnpm --filter nestjs-trpc-v2 test:e2e
 
       - name: Publish to NPM
         run: |

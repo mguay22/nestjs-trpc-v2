@@ -3,8 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./lib",
-    "incremental": false,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "ES2020",
     "lib": ["ES2020"],
     "downlevelIteration": true,
