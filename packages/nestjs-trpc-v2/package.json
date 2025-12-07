@@ -1,6 +1,6 @@
 {
   "name": "nestjs-trpc-v2",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A maintained fork of nestjs-trpc - End-to-end typesafe APIs with tRPC in NestJS",
   "homepage": "https://github.com/mguay22/nestjs-trpc-v2#readme",
   "main": "./dist/index.js",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
-    "start:dev": "tsc --project tsconfig.json --watch --preserveWatchOutput",
+    "dev": "tsc --project tsconfig.json --watch --preserveWatchOutput",
     "debug:dev": "ts-node --inspect-brk lib/index.ts",
     "clean": "tsc -b --clean",
     "test": "TS_JEST_DISABLE_VER_CHECKER=true jest --no-watchman --coverage"
