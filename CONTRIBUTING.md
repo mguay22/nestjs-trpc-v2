@@ -14,17 +14,20 @@ Thank you for your interest in contributing to nestjs-trpc-v2! This document pro
 
 1. Fork the repository
 2. Clone your fork:
+
    ```bash
-   git clone https://github.com/YOUR_USERNAME/nestjs-trpc-v2.git
+   git clone https://github.com/mguay22/nestjs-trpc-v2.git
    cd nestjs-trpc-v2
    ```
 
 3. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 4. Build the project:
+
    ```bash
    pnpm build
    ```
@@ -67,6 +70,7 @@ footer
 ```
 
 Types:
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation only changes
@@ -77,6 +81,7 @@ Types:
 - `chore`: Changes to build process or auxiliary tools
 
 Examples:
+
 ```
 feat(decorators): add new @Subscription decorator
 fix(router): resolve type inference issue
@@ -109,6 +114,7 @@ pnpm --filter nestjs-trpc-v2 build
 ## Submitting a Pull Request
 
 1. Push your changes to your fork:
+
    ```bash
    git push origin feature/your-feature-name
    ```

@@ -8,11 +8,11 @@
 <div align="center">
   <h1>Nestjs tRPC Adapter</h1>
   <h3>An opinionated approach to building<br />End-to-end typesafe APIs with tRPC within NestJS.</h3>
-  <a href="https://npmcharts.com/compare/nestjs-trpc?interval=30">
-    <img alt="weekly downloads" src="https://img.shields.io/npm/dm/nestjs-trpc.svg">
+  <a href="https://npmcharts.com/compare/nestjs-trpc-v2?interval=30">
+    <img alt="weekly downloads" src="https://img.shields.io/npm/dm/nestjs-trpc-v2.svg">
   </a>
-  <a href="https://github.com/KevinEdry/nestjs-trpc/blob/main/LICENSE">
-    <img alt="MIT License" src="https://img.shields.io/github/license/KevinEdry/nestjs-trpc" />
+  <a href="https://github.com/mguay22/nestjs-trpc-v2/blob/main/LICENSE">
+    <img alt="MIT License" src="https://img.shields.io/github/license/mguay22/nestjs-trpc-v2" />
   </a>
   <a href="https://discord.gg/trpc-867764511159091230">
     <img alt="Discord" src="https://img.shields.io/discord/867764511159091230?color=7389D8&label&logo=discord&logoColor=ffffff" />
@@ -65,23 +65,21 @@ Here's a brief example demonstrating how to use the decorators available in **Ne
 
 ```typescript
 // users.router.ts
-import { Inject } from '@nestjs/common';
-import { Router, Query, UseMiddlewares } from 'trpc-nestjs';
-import { UserService } from './user.service';
-import { ProtectedMiddleware } from './protected.middleware';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+import { Inject } from "@nestjs/common";
+import { Router, Query, UseMiddlewares } from "trpc-nestjs";
+import { UserService } from "./user.service";
+import { ProtectedMiddleware } from "./protected.middleware";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 const userSchema = z.object({
   name: z.string(),
-  password: z.string()
-})
+  password: z.string(),
+});
 
 @Router()
 class UserRouter {
-  constructor(
-    @Inject(UserService) private readonly userService: UserService
-  ) {}
+  constructor(@Inject(UserService) private readonly userService: UserService) {}
 
   @UseMiddlewares(ProtectedMiddleware)
   @Query({ output: z.array(userSchema) })
@@ -92,21 +90,11 @@ class UserRouter {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error has occured when trying to get users.",
-        cause: error
-      })
+        cause: error,
+      });
     }
   }
 }
 ```
 
-**👉 See full documentation on [NestJS-tRPC.io](https://nestjs-trpc.io/docs). 👈**
-
-## All contributors
-
-> NestJS tRPC is developed by [Kevin Edry](https://twitter.com/KevinEdry), which taken a huge inspiration from both NestJS and tRPC inner workings.
-
-<a href="https://github.com/KevinEdry/nestjs-trpc/graphs/contributors">
-  <p align="center">
-    <img width="720" height="50" src="https://contrib.rocks/image?repo=kevinedry/nestjs-trpc" alt="A table of avatars from the project's contributors" />
-  </p>
-</a>
+**👉 See full documentation on [NestJS-tRPC.io](https://nestjs-trpc-v2.io/docs). 👈**

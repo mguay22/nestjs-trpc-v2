@@ -9,7 +9,11 @@ import Table from '../../components/Table';
 
 # Installation
 
-This document will guide you through the installation and setting up of **NestJS tRPC** in your nestjs project.
+This document will guide you through the installation and setting up of **NestJS tRPC v2** in your NestJS project.
+
+<Callout type={'info'} emoji={'ℹ️'}>
+  **NestJS tRPC v2** is a maintained fork of the original nestjs-trpc library. This fork provides active maintenance, updated dependencies, and modern tooling while maintaining API compatibility with the original library.
+</Callout>
 
 <Callout type={'warning'} emoji={'⚠️'}>
   If you don't have a NestJS project setup yet, please visit our
@@ -20,27 +24,27 @@ This document will guide you through the installation and setting up of **NestJS
 
 <Steps>
   ### Manual Installation
-  To install **NestJS tRPC** with your preferred package manager, you can use any of the following commands:
+  To install **NestJS tRPC v2** with your preferred package manager, you can use any of the following commands:
 
 <Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
   <Tabs.Tab>
-    ```bash copy 
-    npm install nestjs-trpc
+    ```bash copy
+    npm install nestjs-trpc-v2 zod @trpc/server
     ```
   </Tabs.Tab>
   <Tabs.Tab>
     ```bash copy
-    pnpm add nestjs-trpc 
+    pnpm add nestjs-trpc-v2 zod @trpc/server
     ```
   </Tabs.Tab>
   <Tabs.Tab>
     ```bash copy
-    yarn add nestjs-trpc 
+    yarn add nestjs-trpc-v2 zod @trpc/server
     ```
    </Tabs.Tab>
   <Tabs.Tab>
     ```bash copy
-    bun install nestjs-trpc 
+    bun install nestjs-trpc-v2 zod @trpc/server
     ```
    </Tabs.Tab>
 </Tabs>
@@ -51,7 +55,7 @@ Once the packages are installed, we can import the `TRPCModule` and configure it
 
 ```typescript filename="app.module.ts"
 import { Module } from '@nestjs/common';
-import { TRPCModule } from 'nestjs-trpc';
+import { TRPCModule } from 'nestjs-trpc-v2';
 
 @Module({
   imports: [
@@ -75,10 +79,10 @@ The `forRoot()` method takes an options object as an argument. These options are
 
 ### Module Options
 
-You can import `TRPCModuleOptions` type from `nestjs-trpc` to safely assert all of the `TRPCModule` option types.
+You can import `TRPCModuleOptions` type from `nestjs-trpc-v2` to safely assert all of the `TRPCModule` option types.
 
 ```typescript
-import { TRPCModule, TRPCModuleOptions } from 'nestjs-trpc';
+import { TRPCModule, TRPCModuleOptions } from 'nestjs-trpc-v2';
 const trpcOptions: TRPCModuleOptions = {
   autoSchemaFile: './src/@generated',
 };

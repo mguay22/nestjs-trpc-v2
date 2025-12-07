@@ -8,8 +8,8 @@
 <div align="center">
   <h1>nestjs-trpc-v2</h1>
   <h3>A maintained fork of nestjs-trpc<br />An opinionated approach to building End-to-end typesafe APIs with tRPC within NestJS.</h3>
-  <a href="https://github.com/YOUR_USERNAME/nestjs-trpc-v2/actions/workflows/ci.yml">
-    <img alt="CI" src="https://github.com/YOUR_USERNAME/nestjs-trpc-v2/actions/workflows/ci.yml/badge.svg" />
+  <a href="https://github.com/mguay22/nestjs-trpc-v2/actions/workflows/ci.yml">
+    <img alt="CI" src="https://github.com/mguay22/nestjs-trpc-v2/actions/workflows/ci.yml/badge.svg" />
   </a>
   <a href="https://www.npmjs.com/package/nestjs-trpc-v2">
     <img alt="npm version" src="https://badge.fury.io/js/nestjs-trpc-v2.svg" />
@@ -17,8 +17,8 @@
   <a href="https://www.npmjs.com/package/nestjs-trpc-v2">
     <img alt="weekly downloads" src="https://img.shields.io/npm/dm/nestjs-trpc-v2.svg">
   </a>
-  <a href="https://github.com/YOUR_USERNAME/nestjs-trpc-v2/blob/main/LICENSE">
-    <img alt="MIT License" src="https://img.shields.io/github/license/YOUR_USERNAME/nestjs-trpc-v2" />
+  <a href="https://github.com/mguay22/nestjs-trpc-v2/blob/main/LICENSE">
+    <img alt="MIT License" src="https://img.shields.io/github/license/mguay22/nestjs-trpc-v2" />
   </a>
   <br />
   <figure>
@@ -42,6 +42,7 @@
 **nestjs-trpc-v2** is a library designed to integrate the capabilities of tRPC into the NestJS framework. It provides native support for decorators and implements an opinionated approach that aligns with NestJS conventions.
 
 This v2 fork includes:
+
 - 🔄 Active maintenance and updates
 - 📦 Turborepo monorepo structure
 - 🚀 Modern build tooling
@@ -92,23 +93,21 @@ Here's a brief example demonstrating how to use the decorators available in **ne
 
 ```typescript
 // users.router.ts
-import { Inject } from '@nestjs/common';
-import { Router, Query, UseMiddlewares } from 'nestjs-trpc-v2';
-import { UserService } from './user.service';
-import { ProtectedMiddleware } from './protected.middleware';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+import { Inject } from "@nestjs/common";
+import { Router, Query, UseMiddlewares } from "nestjs-trpc-v2";
+import { UserService } from "./user.service";
+import { ProtectedMiddleware } from "./protected.middleware";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 const userSchema = z.object({
   name: z.string(),
-  password: z.string()
-})
+  password: z.string(),
+});
 
 @Router()
 class UserRouter {
-  constructor(
-    @Inject(UserService) private readonly userService: UserService
-  ) {}
+  constructor(@Inject(UserService) private readonly userService: UserService) {}
 
   @UseMiddlewares(ProtectedMiddleware)
   @Query({ output: z.array(userSchema) })
@@ -119,8 +118,8 @@ class UserRouter {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error has occured when trying to get users.",
-        cause: error
-      })
+        cause: error,
+      });
     }
   }
 }
@@ -143,7 +142,7 @@ This project uses Turborepo for managing the monorepo.
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/nestjs-trpc-v2.git
+git clone https://github.com/mguay22/nestjs-trpc-v2.git
 cd nestjs-trpc-v2
 
 # Install dependencies
@@ -197,12 +196,14 @@ This package is automatically published to npm when a new release is created or 
 Migrating from the original `nestjs-trpc` is straightforward:
 
 1. Update your package.json:
+
 ```diff
 - "nestjs-trpc": "^x.x.x"
 + "nestjs-trpc-v2": "^0.0.1"
 ```
 
 2. Update your imports:
+
 ```diff
 - import { Router, Query } from 'nestjs-trpc';
 + import { Router, Query } from 'nestjs-trpc-v2';
@@ -239,7 +240,8 @@ MIT - See [LICENSE](LICENSE) file for details.
 **⭐ If this library helps you, please consider giving it a star!**
 
 For questions or support:
+
 - 📖 [Documentation](https://nestjs-trpc.io/docs) (original docs, still applicable)
-- 🐛 [Report Issues](https://github.com/YOUR_USERNAME/nestjs-trpc-v2/issues)
-- 💬 [Discussions](https://github.com/YOUR_USERNAME/nestjs-trpc-v2/discussions)
+- 🐛 [Report Issues](https://github.com/mguay22/nestjs-trpc-v2/issues)
+- 💬 [Discussions](https://github.com/mguay22/nestjs-trpc-v2/discussions)
 - 🔗 [Original Repository](https://github.com/KevinEdry/nestjs-trpc)

@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-trpc.io",
+  "name": "nestjs-trpc-v2.io",
   "version": "1.0.0",
   "main": ".next/index.js",
   "scripts": {

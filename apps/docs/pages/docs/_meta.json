@@ -46,11 +46,5 @@
   "docs": {
     "title": "Docs",
     "type": "page"
-  },
-  "contact": {
-    "title": "Contact ↗",
-    "type": "page",
-    "href": "https://twitter.com/KevinEdry",
-    "newWindow": true
   }
 }

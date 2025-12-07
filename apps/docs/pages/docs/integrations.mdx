@@ -2,11 +2,12 @@
 title: "NestJS-tRPC Documentation - Integrations"
 ---
 
-import { Callout, Steps, Tabs } from 'nextra-theme-docs';
+import { Callout, Steps, Tabs } from "nextra-theme-docs";
 
 # Integrations
 
 ### Accessing the AppRouter
+
 In some circumstances ,for example end-to-end tests or integrating with other `trpc` plugins, you may want to get a reference to the generated appRouter object. In end-to-end tests, you can then run queries using the appRouter object directly without using any HTTP listeners.
 
 You can access the generated appRouter using the `AppRouterHost` class:
@@ -14,6 +15,7 @@ You can access the generated appRouter using the `AppRouterHost` class:
 ```typescript
 const { appRouter } = app.get(AppRouterHost);
 ```
+
 <Callout>
 You must call the `AppRouterHost.appRouter{:tsx}` getter after the application has been initialized (after the `onModuleInit` hook has been triggered by either the `app.listen(){:tsx}` or `app.init(){:tsx}` method).
 </Callout>
@@ -21,8 +23,9 @@ You must call the `AppRouterHost.appRouter{:tsx}` getter after the application h
 With the runtime appRouter object, you can integrate with virtually any trpc-specific library, this includes [trpc-panel](https://github.com/iway1/trpc-panel), [trpc-openapi](https://github.com/jlalmes/trpc-openapi), [trpc-playground](https://github.com/sachinraja/trpc-playground) and more.
 
 ### Integrating with `trpc-panel`
+
 Here is a short example of how to integrate [trpc-panel](https://github.com/iway1/trpc-panel), while this is a specific integration, the techniques used here can be applied to any of the trpc-specific libraries you wish to include. <br/>
-If you still run into issues, please open a [new issue](https://github.com/KevinEdry/nestjs-trpc/issues/new) or contact us via Discord.
+If you still run into issues, please open a [new issue](https://github.com/mguay22/nestjs-trpc-v2/issues/new) or contact us via Discord.
 
 <Steps>
   ### Installation
@@ -50,55 +53,60 @@ If you still run into issues, please open a [new issue](https://github.com/Kevin
      </Tabs.Tab>
   </Tabs>
 
-  ### Creating the Panel Controller
-  As per the `trpc-panel` [docs](https://github.com/iway1/trpc-panel?tab=readme-ov-file#quick-start) we need to serve the panel, using the `renderTrpcPanel` method for every method on route `/panel`.
+### Creating the Panel Controller
 
-  ```typescript {8, 14-16} filename="trpc-panel.controller.ts" copy
-  import { All, Controller, Inject, OnModuleInit } from '@nestjs/common';
-  import { renderTrpcPanel } from 'trpc-panel';
-  import { AnyRouter } from '@trpc/server';
-  import { AppRouterHost } from 'nestjs-trpc';
+As per the `trpc-panel` [docs](https://github.com/iway1/trpc-panel?tab=readme-ov-file#quick-start) we need to serve the panel, using the `renderTrpcPanel` method for every method on route `/panel`.
 
-  @Controller()
-  export class TrpcPanelController implements OnModuleInit {
-    private appRouter!: AnyRouter;
+```typescript {8, 14-16} filename="trpc-panel.controller.ts" copy
+import { All, Controller, Inject, OnModuleInit } from "@nestjs/common";
+import { renderTrpcPanel } from "trpc-panel";
+import { AnyRouter } from "@trpc/server";
+import { AppRouterHost } from "nestjs-trpc-v2";
 
-    constructor(
-      @Inject(AppRouterHost) private readonly appRouterHost: AppRouterHost,
-    ) {}
+@Controller()
+export class TrpcPanelController implements OnModuleInit {
+  private appRouter!: AnyRouter;
 
-    onModuleInit() {
-      this.appRouter = this.appRouterHost.appRouter;
-    }
+  constructor(
+    @Inject(AppRouterHost) private readonly appRouterHost: AppRouterHost
+  ) {}
 
-    @All('/panel')
-    panel(): string {
-      return renderTrpcPanel(this.appRouter, {
-        url: 'http://localhost:8080/trpc',
-      });
-    }
+  onModuleInit() {
+    this.appRouter = this.appRouterHost.appRouter;
   }
-  ```
-  <Callout>
-    As you can see in the example above, we are using `onModuleInit` lifecycle method to make sure the appRouter is initialized and available.
-  </Callout>
 
-  ### Register the Controller
-  In order to apply the new Controller routes, we need to register it in the `app.module.ts` file.
+  @All("/panel")
+  panel(): string {
+    return renderTrpcPanel(this.appRouter, {
+      url: "http://localhost:8080/trpc",
+    });
+  }
+}
+```
 
-  ```typescript /TrpcPanelController/ filename="app.module.ts" copy
-  @Module({
-    imports: [
-      TRPCModule.forRoot({
-        autoSchemaFile: './src/@generated',
-        context: AppContext,
-      }),
-    ],
-    controllers: [TrpcPanelController],
-    providers: [],
-  })
-  export class AppModule {}
-  ```
+<Callout>
+  As you can see in the example above, we are using `onModuleInit` lifecycle
+  method to make sure the appRouter is initialized and available.
+</Callout>
+
+### Register the Controller
+
+In order to apply the new Controller routes, we need to register it in the `app.module.ts` file.
+
+```typescript /TrpcPanelController/ filename="app.module.ts" copy
+@Module({
+  imports: [
+    TRPCModule.forRoot({
+      autoSchemaFile: "./src/@generated",
+      context: AppContext,
+    }),
+  ],
+  controllers: [TrpcPanelController],
+  providers: [],
+})
+export class AppModule {}
+```
+
 </Steps>
 
 Once you've registered the controller, start your NestJS application. You can then access the tRPC panel at https://localhost:8080/panel.

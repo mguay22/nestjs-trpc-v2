@@ -37,9 +37,9 @@ Let's start by implementing a simple logger middleware.
 <Tabs items={["NestJS Adapter Middleware", 'tRPC Middleware']}>
   <Tabs.Tab>
     ```typescript filename="logger.middleware.ts" copy
-    import { TRPCMiddleware, TRPCMiddlewareOptions } from 'nestjs-trpc';
+    import { TRPCMiddleware, TRPCMiddlewareOptions } from 'nestjs-trpc-v2';
     import { Inject, Injectable, ConsoleLogger } from '@nestjs/common';
-    import type { Context } from "nestjs-trpc/types";
+    import type { Context } from "nestjs-trpc-v2/types";
 
     @Injectable()
     export class LoggedMiddleware implements TRPCMiddleware<Context> {
@@ -95,7 +95,7 @@ To use the middleware in your procedure instead of the default `publicProcedure`
 import { DatabaseService } from "./database.service.ts";
 import { LoggedMiddleware } from "./logged.middleware.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
-import { Router, Query, UseMiddlewares } from 'nestjs-trpc';
+import { Router, Query, UseMiddlewares } from 'nestjs-trpc-v2';
 import { Inject } from '@nestjs/common';
 import { z } from 'zod';
 
@@ -125,14 +125,14 @@ With middlewares you can change and inject certain parameters in the context to 
 ##### Generated Context
 When you modify the base context with a middleware, a new type will be generated with the middleware name and a `Context` suffix, for example if you have an `AuthMiddleware`, the generated type would be named `AuthMiddlewareContext`.
 
-Then you can import those types and use throughout your procedures from `nestjs-trpc/types`, for example:
+Then you can import those types and use throughout your procedures from `nestjs-trpc-v2/types`, for example:
 <Tabs items={["User Router", 'Auth Middleware', "Generated Interface"]}>
   <Tabs.Tab>
 ```typescript /AuthMiddlewareContext/ filename="user.router.ts" copy
-import type { AuthMiddlewareContext } from 'nestjs-trpc/types';
+import type { AuthMiddlewareContext } from 'nestjs-trpc-v2/types';
 import { UserService } from "./user.service.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
-import { Router, Query, UseMiddlewares } from 'nestjs-trpc';
+import { Router, Query, UseMiddlewares } from 'nestjs-trpc-v2';
 import { Inject } from '@nestjs/common';
 import { z } from 'zod';
 
@@ -161,11 +161,11 @@ import {
   MiddlewareOptions,
   MiddlewareResponse,
   TRPCMiddleware,
-} from 'nestjs-trpc';
+} from 'nestjs-trpc-v2';
 import { Inject, Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TRPCError } from '@trpc/server';
-import type { Context } from 'nestjs-trpc/types';
+import type { Context } from 'nestjs-trpc-v2/types';
 
 @Injectable()
 export class AuthMiddleware implements TRPCMiddleware {
@@ -190,7 +190,7 @@ export class AuthMiddleware implements TRPCMiddleware {
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="nestjs-trpc/types" copy
+```typescript filename="nestjs-trpc-v2/types" copy
 export interface AuthMiddlewareContext extends Context {
   auth: {
     userId: string;
