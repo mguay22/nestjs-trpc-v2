@@ -176,6 +176,121 @@ Feature requests are welcome! Please:
 - Explain why this feature would be useful
 - Provide code examples if possible
 
+## Publishing
+
+### Release Process
+
+This project uses GitHub Releases and automated publishing to npm. Here's how to create a new release:
+
+#### Prerequisites
+
+Before publishing, ensure you have:
+
+1. **NPM Access**: You need to be added as a maintainer on npm (contact the project owner)
+2. **NPM Token**: The repository needs an `NPM_TOKEN` secret configured in GitHub Actions
+3. **All Changes Merged**: Ensure all desired changes are merged to `main` branch
+4. **Tests Passing**: Verify that all CI checks pass on `main`
+
+#### Steps to Create a Release
+
+1. **Update the version** in `packages/nestjs-trpc-v2/package.json`:
+
+   ```bash
+   cd packages/nestjs-trpc-v2
+
+   # For patch releases (0.0.6 → 0.0.7)
+   npm version patch
+
+   # For minor releases (0.0.6 → 0.1.0)
+   npm version minor
+
+   # For major releases (0.0.6 → 1.0.0)
+   npm version major
+   ```
+
+2. **Commit the version change**:
+
+   ```bash
+   git add packages/nestjs-trpc-v2/package.json
+   git commit -m "chore: bump version to vX.X.X"
+   ```
+
+3. **Create and push a git tag**:
+
+   ```bash
+   # The tag should match the version in package.json
+   git tag v0.0.7
+   git push origin main
+   git push origin v0.0.7
+   ```
+
+4. **Automated Process**:
+   - The `release.yml` workflow will automatically trigger
+   - It will create a GitHub Release with auto-generated changelog
+   - The `publish.yml` workflow will publish the package to npm
+   - Both workflows run tests before publishing
+
+#### What Happens During a Release
+
+When you push a version tag (e.g., `v0.0.7`):
+
+1. **GitHub Release Creation** (`release.yml`):
+   - Generates a changelog from commits since the last tag
+   - Creates a GitHub Release with the changelog
+   - Marks pre-releases (e.g., `v0.1.0-beta.1`) appropriately
+
+2. **NPM Publishing** (`publish.yml`):
+   - Installs dependencies
+   - Builds the package
+   - Runs all tests (unit + e2e)
+   - Publishes to npm registry
+
+#### Version Guidelines
+
+Follow [Semantic Versioning](https://semver.org/):
+
+- **Patch** (0.0.x): Bug fixes, documentation updates, internal changes
+- **Minor** (0.x.0): New features, non-breaking changes
+- **Major** (x.0.0): Breaking changes, major API changes
+
+#### Pre-releases
+
+For beta or alpha releases:
+
+```bash
+# Create a pre-release version
+npm version prerelease --preid=beta
+
+# Example: 0.0.6 → 0.0.7-beta.0
+git tag v0.0.7-beta.0
+git push origin main
+git push origin v0.0.7-beta.0
+```
+
+Pre-releases are automatically marked in GitHub Releases.
+
+#### Manual Publishing (Emergency Only)
+
+If automated publishing fails, you can manually publish:
+
+```bash
+# Build the package
+pnpm build
+
+# Navigate to package directory
+cd packages/nestjs-trpc-v2
+
+# Login to npm (if not already)
+npm login
+
+# Publish
+npm publish --access public
+```
+
+### GitHub Packages
+
+Currently, the project publishes to npm only. To also publish to GitHub Packages, the `publish.yml` workflow would need to be extended with an additional job.
+
 ## Questions?
 
 If you have questions, please:
