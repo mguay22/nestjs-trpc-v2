@@ -1,6 +1,6 @@
 {
   "name": "nestjs-trpc-v2",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "A maintained fork of nestjs-trpc - End-to-end typesafe APIs with tRPC in NestJS",
   "homepage": "https://nestjs-trpc-v2.io",
   "main": "./dist/index.js",
