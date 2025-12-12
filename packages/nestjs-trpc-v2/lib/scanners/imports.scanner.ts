@@ -1,42 +1,66 @@
 import { Injectable } from '@nestjs/common';
 import { Project, SourceFile } from 'ts-morph';
 import { SourceFileImportsMap } from '../interfaces/generator.interface';
+import { createRequire } from 'node:module';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 @Injectable()
 export class ImportsScanner {
   public buildSourceFileImportsMap(
-    sourceFile: SourceFile | null,
+    sourceFile: SourceFile,
     project: Project,
   ): Map<string, SourceFileImportsMap> {
     const sourceFileImportsMap = new Map<string, SourceFileImportsMap>();
-
-    if (sourceFile == null) {
-      return sourceFileImportsMap;
-    }
-
     const importDeclarations = sourceFile.getImportDeclarations();
 
     for (const importDeclaration of importDeclarations) {
       const namedImports = importDeclaration.getNamedImports();
       for (const namedImport of namedImports) {
         const name = namedImport.getName();
-        const importedSourceFile =
+        let importedSourceFile =
           importDeclaration.getModuleSpecifierSourceFile();
 
+        // If it resolved to a .d.ts file, try to find the TypeScript source instead
+        if (
+          importedSourceFile &&
+          importedSourceFile.getFilePath().endsWith('.d.ts')
+        ) {
+          const tsSourcePath = this.findTypeScriptSource(
+            importedSourceFile.getFilePath(),
+          );
+
+          if (tsSourcePath) {
+            const tsSourceFile =
+              project.addSourceFileAtPathIfExists(tsSourcePath);
+            if (tsSourceFile) {
+              importedSourceFile = tsSourceFile;
+            }
+          }
+        }
+
         if (importedSourceFile == null) {
-          // Can't resolve this import - it's likely an external/workspace package
-          // Store it with the moduleSpecifier so it can be preserved
-          sourceFileImportsMap.set(name, {
-            initializer: null,
-            sourceFile: null,
-            moduleSpecifier: importDeclaration.getModuleSpecifierValue(),
-          });
-          continue;
+          // Try to resolve using Node's module resolution
+          const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
+          const resolvedPath = this.resolveModuleUsingNode(
+            moduleSpecifier,
+            sourceFile.getFilePath(),
+          );
+
+          if (resolvedPath) {
+            // Add the resolved file to the project and try again
+            importedSourceFile =
+              project.addSourceFileAtPathIfExists(resolvedPath);
+          }
+
+          if (importedSourceFile == null) {
+            continue;
+          }
         }
 
         const resolvedSourceFile =
           importedSourceFile.getFilePath().endsWith('index.ts') &&
-          !importedSourceFile.getVariableDeclaration(name)
+            !importedSourceFile.getVariableDeclaration(name)
             ? this.resolveBarrelFileImport(importedSourceFile, name, project)
             : importedSourceFile;
 
@@ -109,6 +133,128 @@ export class ImportsScanner {
           if (baseSourceFile) return baseSourceFile;
         }
       }
+    }
+
+    return undefined;
+  }
+
+  private resolveModuleUsingNode(
+    moduleSpecifier: string,
+    fromFile: string,
+  ): string | undefined {
+    // Only try to resolve non-relative imports (workspace packages, node_modules, etc.)
+    if (moduleSpecifier.startsWith('.') || moduleSpecifier.startsWith('/')) {
+      return undefined;
+    }
+
+    try {
+      const require = createRequire(fromFile);
+      const resolvedPath = require.resolve(moduleSpecifier);
+
+      // Try to find the TypeScript source file instead of compiled output
+      const tsSourcePath = this.findTypeScriptSource(resolvedPath);
+
+      if (tsSourcePath && fs.existsSync(tsSourcePath)) {
+        return tsSourcePath;
+      }
+
+      // Fallback: Convert .js/.d.ts to .ts if possible
+      const tsPath = resolvedPath
+        .replace(/\.js$/, '.ts')
+        .replace(/\.d\.ts$/, '.ts');
+
+      if (fs.existsSync(tsPath)) {
+        return tsPath;
+      }
+
+      return undefined;
+    } catch (error) {
+      // Module couldn't be resolved, skip it
+      return undefined;
+    }
+  }
+
+  private findTypeScriptSource(compiledPath: string): string | undefined {
+    // If it's a .d.ts file in dist/, try to find the source in src/
+    // Example: /path/to/package/dist/index.d.ts -> /path/to/package/src/index.ts
+    if (compiledPath.includes('/dist/')) {
+      const srcPath = compiledPath
+        .replace('/dist/', '/src/')
+        .replace(/\.d\.ts$/, '.ts')
+        .replace(/\.js$/, '.ts');
+
+      if (fs.existsSync(srcPath)) {
+        return srcPath;
+      }
+    }
+
+    // Try other common patterns: lib/, build/, out/
+    const patterns = ['/lib/', '/build/', '/out/'];
+    for (const pattern of patterns) {
+      if (compiledPath.includes(pattern)) {
+        const srcPath = compiledPath
+          .replace(pattern, '/src/')
+          .replace(/\.d\.ts$/, '.ts')
+          .replace(/\.js$/, '.ts');
+
+        if (fs.existsSync(srcPath)) {
+          return srcPath;
+        }
+      }
+    }
+
+    // Try to find package.json and read the source location
+    const packageDir = this.findPackageDirectory(compiledPath);
+
+    if (packageDir) {
+      const packageJsonPath = path.join(packageDir, 'package.json');
+
+      if (fs.existsSync(packageJsonPath)) {
+        try {
+          const packageJson = JSON.parse(
+            fs.readFileSync(packageJsonPath, 'utf8'),
+          );
+
+          // Try common source field patterns
+          const sourceFields = [
+            'source',
+            'typescript:main',
+            'typings',
+            'types',
+          ];
+          for (const field of sourceFields) {
+            if (packageJson[field]) {
+              const sourcePath = path.join(packageDir, packageJson[field]);
+              if (fs.existsSync(sourcePath) && sourcePath.endsWith('.ts')) {
+                return sourcePath;
+              }
+            }
+          }
+
+          // Fallback: try src/index.ts
+          const srcIndexPath = path.join(packageDir, 'src', 'index.ts');
+          if (fs.existsSync(srcIndexPath)) {
+            return srcIndexPath;
+          }
+        } catch {
+          // Failed to read package.json, continue
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  private findPackageDirectory(filePath: string): string | undefined {
+    let currentDir = path.dirname(filePath);
+    const root = path.parse(currentDir).root;
+
+    while (currentDir !== root) {
+      const packageJsonPath = path.join(currentDir, 'package.json');
+      if (fs.existsSync(packageJsonPath)) {
+        return currentDir;
+      }
+      currentDir = path.dirname(currentDir);
     }
 
     return undefined;
