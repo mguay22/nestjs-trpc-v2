@@ -224,10 +224,15 @@ export class ImportsScanner {
           for (const field of sourceFields) {
             if (packageJson[field]) {
               const sourcePath = path.join(packageDir, packageJson[field]);
-              if (fs.existsSync(sourcePath) && sourcePath.endsWith('.ts')) {
-                return sourcePath;
+              if (fs.existsSync(sourcePath)) {
+                if (sourcePath.endsWith('.ts')) {
+                  return sourcePath;
+                } else if (sourcePath.endsWith('.d.ts')) {
+                  // Try to find the corresponding .ts source file
+                  const tsSource = this.findTypeScriptSource(sourcePath);
+                  return tsSource ?? sourcePath;
+                }
               }
-            }
           }
 
           // Fallback: try src/index.ts
