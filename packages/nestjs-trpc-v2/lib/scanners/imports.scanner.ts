@@ -236,8 +236,12 @@ export class ImportsScanner {
           if (fs.existsSync(srcIndexPath)) {
             return srcIndexPath;
           }
-        } catch {
-          // Failed to read package.json, continue
+        } catch (err) {
+          console.error(
+            `Failed to read or parse package.json at ${packageJsonPath}:`,
+            err instanceof Error ? err.message : err
+          );
+          // Continue searching for source file
         }
       }
     }
