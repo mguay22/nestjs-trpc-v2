@@ -6,7 +6,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 
 @Injectable()
 export class ExpressDriver<
-  TOptions extends Record<string, any> = TRPCModuleOptions,
+  _TOptions extends Record<string, any> = TRPCModuleOptions,
 > {
   public async start(
     options: TRPCModuleOptions,

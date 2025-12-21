@@ -6,7 +6,11 @@
     "build": "rimraf .next && rimraf .out && next build && next-sitemap",
     "start": "next start",
     "dev": "next dev",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -31,8 +35,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9.9.1",
-    "eslint-config-next": "^14.2.6",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "14.2.33",
     "next-sitemap": "^4.2.3",
     "postcss": "^8",
     "rimraf": "^6.0.1",

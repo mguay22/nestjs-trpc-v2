@@ -15,9 +15,9 @@ describe('MiddlewareGenerator', () => {
 
     middlewareGenerator = module.get<MiddlewareGenerator>(MiddlewareGenerator);
     project = new Project();
-    
+
     sourceFile = project.createSourceFile(
-      "test.ts",
+      'test.ts',
       `
       import { TRPCMiddleware } from './interfaces';
 
@@ -31,7 +31,7 @@ describe('MiddlewareGenerator', () => {
         }
       }
       `,
-      { overwrite: true }
+      { overwrite: true },
     );
   });
 
@@ -41,7 +41,11 @@ describe('MiddlewareGenerator', () => {
 
   describe('getMiddlewareInterface', () => {
     it('should return null if middleware class name is not defined', async () => {
-      const result = await middlewareGenerator.getMiddlewareInterface('routerPath', {} as any, project);
+      const result = await middlewareGenerator.getMiddlewareInterface(
+        'routerPath',
+        {} as any,
+        project,
+      );
       expect(result).toBeNull();
     });
 
@@ -58,12 +62,14 @@ describe('MiddlewareGenerator', () => {
 
       jest.spyOn(project, 'addSourceFileAtPath').mockReturnValue(sourceFile);
 
-      const result = await middlewareGenerator.getMiddlewareInterface('routerPath', TestMiddleware, project);
+      const result = await middlewareGenerator.getMiddlewareInterface(
+        'routerPath',
+        TestMiddleware,
+        project,
+      );
       expect(result).toEqual({
         name: 'TestMiddleware',
-        properties: [
-          { name: 'user', type: '{ id: string; name: string; }' },
-        ],
+        properties: [{ name: 'user', type: '{ id: string; name: string; }' }],
       });
     });
   });

@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Project } from 'ts-morph';
-import {
-  ProcedureGeneratorMetadata,
-} from '../../interfaces/generator.interface';
+import { ProcedureGeneratorMetadata } from '../../interfaces/generator.interface';
 import { ProcedureGenerator } from '../procedure.generator';
 import { ImportsScanner } from '../../scanners/imports.scanner';
 import { StaticGenerator } from '../static.generator';
@@ -10,7 +7,6 @@ import { TYPESCRIPT_APP_ROUTER_SOURCE_FILE } from '../generator.constants';
 
 describe('ProcedureGenerator', () => {
   let procedureGenerator: ProcedureGenerator;
-  let project: Project;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,29 +40,31 @@ describe('ProcedureGenerator', () => {
         const mockProcedure: ProcedureGeneratorMetadata = {
           name: 'testQuery',
           decorators: [{ name: 'Query', arguments: {} }],
-        }
+        };
 
-        const result = procedureGenerator.generateProcedureString(mockProcedure);
+        const result =
+          procedureGenerator.generateProcedureString(mockProcedure);
 
         expect(result).toBe(
-          'testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )'
+          'testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
         );
       });
-    })
+    });
 
     describe('for a mutation', () => {
       it('should generate router string from metadata', () => {
         const mockProcedure: ProcedureGeneratorMetadata = {
           name: 'testMutation',
           decorators: [{ name: 'Mutation', arguments: {} }],
-        }
+        };
 
-        const result = procedureGenerator.generateProcedureString(mockProcedure);
+        const result =
+          procedureGenerator.generateProcedureString(mockProcedure);
 
         expect(result).toBe(
-          'testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )'
+          'testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
         );
       });
-    })
+    });
   });
 });

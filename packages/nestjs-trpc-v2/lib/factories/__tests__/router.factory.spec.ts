@@ -3,7 +3,12 @@ import { RouterFactory } from '../router.factory';
 import { ConsoleLogger } from '@nestjs/common';
 import { ModulesContainer } from '@nestjs/core';
 import { ProcedureFactory } from '../procedure.factory';
-import { ROUTER_METADATA_KEY, MIDDLEWARES_KEY, PROCEDURE_TYPE_KEY, PROCEDURE_METADATA_KEY } from '../../trpc.constants';
+import {
+  ROUTER_METADATA_KEY,
+  MIDDLEWARES_KEY,
+  PROCEDURE_TYPE_KEY,
+  PROCEDURE_METADATA_KEY,
+} from '../../trpc.constants';
 import { z } from 'zod';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { TRPCMiddleware } from '../../interfaces';
@@ -16,7 +21,6 @@ describe('RouterFactory', () => {
   let procedureFactory: ProcedureFactory;
 
   beforeEach(async () => {
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RouterFactory,
@@ -46,7 +50,7 @@ describe('RouterFactory', () => {
   });
 
   describe('getRouters', () => {
-    it('should return an empty array if no routers are present', ()=> {
+    it('should return an empty array if no routers are present', () => {
       const result = routerFactory.getRouters();
       expect(result).toHaveLength(0);
     });
@@ -98,17 +102,23 @@ describe('RouterFactory', () => {
 
       const mockModule = {
         providers: new Map([
-          ['UserRouter', { 
-            name: 'UserRouter',
-            instance: userRouterInstance,
-            isResolved: true
-          }],
-          ['MockService', { 
-            name: 'MockService',
-            instance: mockServiceInstance,
-            isResolved: true
-          }]
-        ])
+          [
+            'UserRouter',
+            {
+              name: 'UserRouter',
+              instance: userRouterInstance,
+              isResolved: true,
+            },
+          ],
+          [
+            'MockService',
+            {
+              name: 'MockService',
+              instance: mockServiceInstance,
+              isResolved: true,
+            },
+          ],
+        ]),
       };
       modulesContainer.set('TestModule', mockModule as any);
 
@@ -166,34 +176,43 @@ describe('RouterFactory', () => {
       // Setup ModulesContainer
       const mockModule = {
         providers: new Map([
-          ['UserRouter', { 
-            name: 'UserRouter',
-            instance: userRouterInstance,
-            isResolved: true
-          }]
-        ])
+          [
+            'UserRouter',
+            {
+              name: 'UserRouter',
+              instance: userRouterInstance,
+              isResolved: true,
+            },
+          ],
+        ]),
       };
       modulesContainer.set('TestModule', mockModule as any);
 
       // Mock getProcedures
-      const mockProcedures = [{
-        input: z.object({ userId: z.string() }),
-        output: userSchema,
-        type: 'query',
-        name: 'getUserById',
-        implementation: UserRouter.prototype.getUserById,
-        params: [
-          { type: 'input', index: 0, key: 'userId' },
-          { type: 'context', index: 1 },
-          { type: 'options', index: 2 },
-        ],
-        middlewares: ProtectedMiddleware,
-      }];
-      (procedureFactory.getProcedures as jest.Mock).mockReturnValue(mockProcedures);
+      const mockProcedures = [
+        {
+          input: z.object({ userId: z.string() }),
+          output: userSchema,
+          type: 'query',
+          name: 'getUserById',
+          implementation: UserRouter.prototype.getUserById,
+          params: [
+            { type: 'input', index: 0, key: 'userId' },
+            { type: 'context', index: 1 },
+            { type: 'options', index: 2 },
+          ],
+          middlewares: ProtectedMiddleware,
+        },
+      ];
+      (procedureFactory.getProcedures as jest.Mock).mockReturnValue(
+        mockProcedures,
+      );
 
       // Mock serializeProcedures
       (procedureFactory.serializeProcedures as jest.Mock).mockReturnValue({
-        getUserById: procedure.query(() => { return "mock" }),
+        getUserById: procedure.query(() => {
+          return 'mock';
+        }),
       });
 
       // Mock procedure builder
@@ -205,7 +224,10 @@ describe('RouterFactory', () => {
       } as any;
 
       // Call serializeRoutes
-      const result = routerFactory.serializeRoutes(router, mockProcedureBuilder);
+      const result = routerFactory.serializeRoutes(
+        router,
+        mockProcedureBuilder,
+      );
 
       // Assertions
       expect(result).toHaveProperty('users');
@@ -215,7 +237,7 @@ describe('RouterFactory', () => {
         userRouterInstance,
         'users',
         mockProcedureBuilder,
-        []
+        [],
       );
     });
   });

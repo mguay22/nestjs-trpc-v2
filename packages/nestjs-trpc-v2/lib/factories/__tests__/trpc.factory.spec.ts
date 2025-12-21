@@ -6,7 +6,6 @@ import { ProcedureFactory } from '../procedure.factory';
 
 describe('TRPCFactory', () => {
   let trpcFactory: TRPCFactory;
-  let routerFactory: RouterFactory;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +29,6 @@ describe('TRPCFactory', () => {
     }).compile();
 
     trpcFactory = module.get<TRPCFactory>(TRPCFactory);
-    routerFactory = module.get<RouterFactory>(RouterFactory);
   });
 
   it('should be defined', () => {

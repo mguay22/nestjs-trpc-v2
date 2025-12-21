@@ -8,7 +8,7 @@ describe('Router Decorator', () => {
     class TestRouter {}
 
     const metadata = Reflect.getMetadata(ROUTER_METADATA_KEY, TestRouter);
-    expect(metadata).toStrictEqual({alias: undefined, path: __filename})
+    expect(metadata).toStrictEqual({ alias: undefined, path: __filename });
   });
 
   it('should set router metadata with alias', () => {
@@ -18,7 +18,7 @@ describe('Router Decorator', () => {
     class TestRouter {}
 
     const metadata = Reflect.getMetadata(ROUTER_METADATA_KEY, TestRouter);
-    expect(metadata).toStrictEqual({alias, path: __filename})
+    expect(metadata).toStrictEqual({ alias, path: __filename });
   });
 
   it('should not affect class methods', () => {
@@ -27,7 +27,10 @@ describe('Router Decorator', () => {
       testMethod() {}
     }
 
-    const metadata = Reflect.getMetadata(ROUTER_METADATA_KEY, TestRouter.prototype.testMethod);
+    const metadata = Reflect.getMetadata(
+      ROUTER_METADATA_KEY,
+      TestRouter.prototype.testMethod,
+    );
     expect(metadata).toBeUndefined();
   });
 

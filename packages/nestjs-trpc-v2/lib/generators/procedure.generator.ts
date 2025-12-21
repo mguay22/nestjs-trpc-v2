@@ -70,7 +70,8 @@ export class ProcedureGenerator {
         const importedIdentifier = importsMap.get(identifierName);
 
         if (importedIdentifier != null) {
-          const { initializer, sourceFile: importedSourceFile } = importedIdentifier;
+          const { initializer, sourceFile: importedSourceFile } =
+            importedIdentifier;
 
           if (initializer == null || importedSourceFile == null) {
             // Can't flatten external imports, add to imports and keep as-is

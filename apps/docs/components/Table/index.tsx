@@ -15,15 +15,13 @@ function Table({ children, columns = [] }: TableProps) {
   return (
     <table className="w-full table-auto">
       <thead>
-      <tr className="text-left text-[rgba(163,163,163,var(--tw-text-opacity))]">
-        {columns.map((column, index) => (
-          <Table.Column key={index}>{column}</Table.Column>
-        ))}
-      </tr>
+        <tr className="text-left text-[rgba(163,163,163,var(--tw-text-opacity))]">
+          {columns.map((column, index) => (
+            <Table.Column key={index}>{column}</Table.Column>
+          ))}
+        </tr>
       </thead>
-      <tbody>
-      {children}
-      </tbody>
+      <tbody>{children}</tbody>
     </table>
   );
 }
@@ -33,11 +31,7 @@ function Column({ children }: { children: ReactNode }) {
 }
 
 function Row({ children }: { children: ReactNode }) {
-  return (
-    <tr className="border-t border-[#262626]">
-      {children}
-    </tr>
-  );
+  return <tr className="border-t border-[#262626]">{children}</tr>;
 }
 
 function Cell({ children, description }: CellProps) {
@@ -45,7 +39,9 @@ function Cell({ children, description }: CellProps) {
     <td className="py-2">
       <div className="flex items-center">
         {children}
-        {description != null && <Info size={16} className="ml-1 text-gray-500" />}
+        {description != null && (
+          <Info size={16} className="ml-1 text-gray-500" />
+        )}
       </div>
     </td>
   );

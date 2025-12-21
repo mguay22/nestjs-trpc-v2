@@ -1,11 +1,17 @@
 import 'reflect-metadata';
 import { UseMiddlewares } from '../middlewares.decorator';
 import { MIDDLEWARES_KEY } from '../../trpc.constants';
-import { MiddlewareOptions, MiddlewareResponse, TRPCMiddleware } from '../../interfaces';
+import {
+  MiddlewareOptions,
+  MiddlewareResponse,
+  TRPCMiddleware,
+} from '../../interfaces';
 
 describe('UseMiddlewares Decorator', () => {
   class TestMiddleware implements TRPCMiddleware {
-    use(opts: MiddlewareOptions<object>): MiddlewareResponse | Promise<MiddlewareResponse> {
+    use(
+      _opts: MiddlewareOptions<object>,
+    ): MiddlewareResponse | Promise<MiddlewareResponse> {
       throw new Error('Method not implemented.');
     }
   }
@@ -24,20 +30,23 @@ describe('UseMiddlewares Decorator', () => {
       testMethod() {}
     }
 
-    const metadata = Reflect.getMetadata(MIDDLEWARES_KEY, TestClass.prototype.testMethod);
+    const metadata = Reflect.getMetadata(
+      MIDDLEWARES_KEY,
+      TestClass.prototype.testMethod,
+    );
     expect(metadata).toStrictEqual([TestMiddleware]);
   });
 
   it('should throw an error for invalid middleware on class', () => {
     expect(() => {
       @UseMiddlewares({} as any)
-      class TestClass {}
+      class _TestClass {}
     }).toThrow();
   });
 
   it('should throw an error for invalid middleware on method', () => {
     expect(() => {
-      class TestClass {
+      class _TestClass {
         @UseMiddlewares({} as any)
         testMethod() {}
       }

@@ -1,37 +1,37 @@
-import { ConsoleLogger, Inject, Injectable, Type } from "@nestjs/common";
-import { HttpAdapterHost, ModuleRef } from "@nestjs/core";
-import type { Application as ExpressApplication } from "express";
-import type { FastifyInstance as FastifyApplication } from "fastify";
-import { TRPCContext, TRPCModuleOptions } from "./interfaces";
-import { AnyRouter, initTRPC } from "@trpc/server";
-import { TRPCFactory } from "./factories/trpc.factory";
-import { AppRouterHost } from "./app-router.host";
-import { ExpressDriver, FastifyDriver } from "./drivers";
+import { ConsoleLogger, Inject, Injectable, Type } from '@nestjs/common';
+import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import type { Application as ExpressApplication } from 'express';
+import type { FastifyInstance as FastifyApplication } from 'fastify';
+import { TRPCContext, TRPCModuleOptions } from './interfaces';
+import { AnyRouter, initTRPC } from '@trpc/server';
+import { TRPCFactory } from './factories/trpc.factory';
+import { AppRouterHost } from './app-router.host';
+import { ExpressDriver, FastifyDriver } from './drivers';
 
 function isExpressApplication(app: any): app is ExpressApplication {
   return (
-    typeof app === "function" &&
-    typeof app.get === "function" &&
-    typeof app.post === "function" &&
-    typeof app.use === "function" &&
-    typeof app.listen === "function"
+    typeof app === 'function' &&
+    typeof app.get === 'function' &&
+    typeof app.post === 'function' &&
+    typeof app.use === 'function' &&
+    typeof app.listen === 'function'
   );
 }
 
 function isFastifyApplication(app: any): app is FastifyApplication {
   return (
-    typeof app === "object" &&
+    typeof app === 'object' &&
     app !== null &&
-    typeof app.get === "function" &&
-    typeof app.post === "function" &&
-    typeof app.register === "function" &&
-    typeof app.listen === "function"
+    typeof app.get === 'function' &&
+    typeof app.post === 'function' &&
+    typeof app.register === 'function' &&
+    typeof app.listen === 'function'
   );
 }
 
 @Injectable()
 export class TRPCDriver<
-  TOptions extends Record<string, any> = TRPCModuleOptions,
+  _TOptions extends Record<string, any> = TRPCModuleOptions,
 > {
   @Inject(HttpAdapterHost)
   protected readonly httpAdapterHost!: HttpAdapterHost;
@@ -66,7 +66,7 @@ export class TRPCDriver<
 
     const appRouter: AnyRouter = this.trpcFactory.serializeAppRoutes(
       router,
-      procedure
+      procedure,
     );
 
     this.appRouterHost.appRouter = appRouter;
@@ -86,9 +86,9 @@ export class TRPCDriver<
       ExpressApplication | FastifyApplication
     >();
 
-    if (platformName === "express" && isExpressApplication(app)) {
+    if (platformName === 'express' && isExpressApplication(app)) {
       await this.expressDriver.start(options, app, appRouter, contextInstance);
-    } else if (platformName === "fastify" && isFastifyApplication(app)) {
+    } else if (platformName === 'fastify' && isFastifyApplication(app)) {
       await this.fastifyDriver.start(options, app, appRouter, contextInstance);
     } else {
       throw new Error(`Unsupported http adapter: ${platformName}`);

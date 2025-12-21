@@ -12,10 +12,6 @@
     "composite": false,
     "incremental": false
   },
-  "include": [
-    "lib/**/__tests__/**/*.ts",
-    "lib/**/*.spec.ts",
-    "test/**/*.ts"
-  ],
+  "include": ["lib/**/__tests__/**/*.ts", "lib/**/*.spec.ts", "test/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

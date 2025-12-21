@@ -12,7 +12,9 @@ describe('DecoratorGenerator', () => {
 
   beforeEach(async () => {
     project = new Project();
-    sourceFile = project.createSourceFile("test.ts", `
+    sourceFile = project.createSourceFile(
+      'test.ts',
+      `
       import { Query, Mutation, UseMiddlewares } from '@nestjs/common';
       
       class TestClass {
@@ -28,7 +30,9 @@ describe('DecoratorGenerator', () => {
         @UnsupportedDecorator()
         unsupportedMethod() {}
       }
-    `, {overwrite: true});
+    `,
+      { overwrite: true },
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -58,55 +62,68 @@ describe('DecoratorGenerator', () => {
 
   describe('serializeProcedureDecorators', () => {
     it('should serialize Query decorator', () => {
-      const queryMethod = sourceFile.getClass('TestClass')!.getMethod('queryMethod')!;
+      const queryMethod = sourceFile
+        .getClass('TestClass')!
+        .getMethod('queryMethod')!;
       const queryDecorator = queryMethod.getDecorator('Query')!;
 
       const result = decoratorGenerator.serializeProcedureDecorators(
         [queryDecorator],
         sourceFile,
-        project
+        project,
       );
 
       expect(result).toEqual([{ name: 'Query', arguments: {} }]);
     });
 
     it('should serialize Mutation decorator', () => {
-      const mutationMethod = sourceFile.getClass('TestClass')!.getMethod('mutationMethod')!;
+      const mutationMethod = sourceFile
+        .getClass('TestClass')!
+        .getMethod('mutationMethod')!;
       const mutationDecorator = mutationMethod.getDecorator('Mutation')!;
 
       const result = decoratorGenerator.serializeProcedureDecorators(
         [mutationDecorator],
         sourceFile,
-        project
+        project,
       );
 
       expect(result).toEqual([{ name: 'Mutation', arguments: {} }]);
     });
 
     it('should ignore UseMiddlewares decorator', () => {
-      const middlewareMethod = sourceFile.getClass('TestClass')!.getMethod('middlewareMethod')!;
-      const middlewaresDecorator = middlewareMethod.getDecorator('UseMiddlewares')!;
+      const middlewareMethod = sourceFile
+        .getClass('TestClass')!
+        .getMethod('middlewareMethod')!;
+      const middlewaresDecorator =
+        middlewareMethod.getDecorator('UseMiddlewares')!;
 
       const result = decoratorGenerator.serializeProcedureDecorators(
         [middlewaresDecorator],
         sourceFile,
-        project
+        project,
       );
 
       expect(result).toEqual([]);
     });
 
     it('should warn about unsupported decorators', () => {
-      const unsupportedMethod = sourceFile.getClass('TestClass')!.getMethod('unsupportedMethod')!;
-      const unsupportedDecorator = unsupportedMethod.getDecorator('UnsupportedDecorator')!;
+      const unsupportedMethod = sourceFile
+        .getClass('TestClass')!
+        .getMethod('unsupportedMethod')!;
+      const unsupportedDecorator = unsupportedMethod.getDecorator(
+        'UnsupportedDecorator',
+      )!;
 
       decoratorGenerator.serializeProcedureDecorators(
         [unsupportedDecorator],
         sourceFile,
-        project
+        project,
       );
 
-      expect(consoleLogger.warn).toHaveBeenCalledWith('Decorator UnsupportedDecorator, not supported.');
+      expect(consoleLogger.warn).toHaveBeenCalledWith(
+        'Decorator UnsupportedDecorator, not supported.',
+      );
     });
   });
 });

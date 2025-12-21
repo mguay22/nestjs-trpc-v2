@@ -1,6 +1,6 @@
-import { applyDecorators, SetMetadata } from "@nestjs/common";
-import { ROUTER_METADATA_KEY } from "../trpc.constants";
-import { FileScanner } from "../scanners/file.scanner";
+import { applyDecorators, SetMetadata } from '@nestjs/common';
+import { ROUTER_METADATA_KEY } from '../trpc.constants';
+import { FileScanner } from '../scanners/file.scanner';
 
 const fileScanner = new FileScanner();
 
@@ -23,6 +23,6 @@ const fileScanner = new FileScanner();
 export function Router(args?: { alias?: string }): ClassDecorator {
   const path = fileScanner.getCallerFilePath();
   return applyDecorators(
-    ...[SetMetadata(ROUTER_METADATA_KEY, { alias: args?.alias, path })]
+    ...[SetMetadata(ROUTER_METADATA_KEY, { alias: args?.alias, path })],
   );
 }

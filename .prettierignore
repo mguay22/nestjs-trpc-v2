@@ -1,0 +1,21 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+dist
+build
+.next
+out
+coverage
+
+# Cache directories
+.turbo
+.cache
+
+# Generated files
+*.d.ts
+
+# Config files that should not be formatted
+pnpm-workspace.yaml
+.changeset

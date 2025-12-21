@@ -6,7 +6,7 @@ import * as trpcFastify from '@trpc/server/adapters/fastify';
 
 @Injectable()
 export class FastifyDriver<
-  TOptions extends Record<string, any> = TRPCModuleOptions,
+  _TOptions extends Record<string, any> = TRPCModuleOptions,
 > {
   public async start(
     options: TRPCModuleOptions,

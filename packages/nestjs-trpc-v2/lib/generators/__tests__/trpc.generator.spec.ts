@@ -10,10 +10,18 @@ import { ProcedureFactory } from '../../factories/procedure.factory';
 import { ClassDeclaration, Project, SourceFile } from 'ts-morph';
 import * as fileUtil from '../../utils/ts-morph.util';
 import { ProcedureFactoryMetadata } from '../../interfaces/factory.interface';
-import { MiddlewareOptions, MiddlewareResponse, TRPCContext, TRPCMiddleware } from '../../interfaces';
+import {
+  MiddlewareOptions,
+  MiddlewareResponse,
+  TRPCContext,
+  TRPCMiddleware,
+} from '../../interfaces';
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
-import { TRPC_GENERATOR_OPTIONS, TRPC_MODULE_CALLER_FILE_PATH } from '../../trpc.constants';
-import { TYPESCRIPT_APP_ROUTER_SOURCE_FILE, TYPESCRIPT_PROJECT } from '../generator.constants';
+import { TRPC_MODULE_CALLER_FILE_PATH } from '../../trpc.constants';
+import {
+  TYPESCRIPT_APP_ROUTER_SOURCE_FILE,
+  TYPESCRIPT_PROJECT,
+} from '../generator.constants';
 import { StaticGenerator } from '../static.generator';
 import { ImportsScanner } from '../../scanners/imports.scanner';
 import { SourceFileImportsMap } from '../../interfaces/generator.interface';
@@ -35,7 +43,7 @@ describe('TRPCGenerator', () => {
 
   beforeEach(async () => {
     project = new Project();
-    sourceFile = project.createSourceFile("test.ts", "", {overwrite: true});
+    sourceFile = project.createSourceFile('test.ts', '', { overwrite: true });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -128,36 +136,60 @@ describe('TRPCGenerator', () => {
 
   describe('generateSchemaFile', () => {
     it('should generate schema file', async () => {
-      const mockRouters = [{ name: 'TestRouter', instance: {}, alias: 'test', path: 'testPath', middlewares: [] }];
-      const mockProcedures: Array<ProcedureFactoryMetadata> = [{ 
-        name: 'testProcedure', 
-        implementation: jest.fn(), 
-        type: "query", 
-        input: undefined,
-        output: undefined,
-        params: [],
-        middlewares: [],
-      }];
-      const mockRoutersMetadata = [{ name: 'TestRouter', alias: 'test', procedures: [{ name: 'testProcedure', decorators: [] }], path: 'testPath'}];
+      const mockRouters = [
+        {
+          name: 'TestRouter',
+          instance: {},
+          alias: 'test',
+          path: 'testPath',
+          middlewares: [],
+        },
+      ];
+      const mockProcedures: Array<ProcedureFactoryMetadata> = [
+        {
+          name: 'testProcedure',
+          implementation: jest.fn(),
+          type: 'query',
+          input: undefined,
+          output: undefined,
+          params: [],
+          middlewares: [],
+        },
+      ];
+      const mockRoutersMetadata = [
+        {
+          name: 'TestRouter',
+          alias: 'test',
+          procedures: [{ name: 'testProcedure', decorators: [] }],
+          path: 'testPath',
+        },
+      ];
 
       routerFactory.getRouters.mockReturnValue(mockRouters);
       procedureFactory.getProcedures.mockReturnValue(mockProcedures);
       routerGenerator.serializeRouters.mockReturnValue(mockRoutersMetadata);
-      routerGenerator.generateRoutersStringFromMetadata.mockReturnValue('test: t.router({})');
+      routerGenerator.generateRoutersStringFromMetadata.mockReturnValue(
+        'test: t.router({})',
+      );
 
       jest.spyOn(project, 'createSourceFile').mockReturnValue(sourceFile);
       (fileUtil.saveOrOverrideFile as jest.Mock).mockResolvedValue(undefined);
 
-      await trpcGenerator.generateSchemaFile([{name: '/output/path'}]);
+      await trpcGenerator.generateSchemaFile([{ name: '/output/path' }]);
 
       expect(routerFactory.getRouters).toHaveBeenCalled();
       expect(procedureFactory.getProcedures).toHaveBeenCalled();
-      expect(routerGenerator.serializeRouters).toHaveBeenCalledWith(expect.any(Array), expect.any(Project));
-      expect(routerGenerator.generateRoutersStringFromMetadata).toHaveBeenCalledWith(mockRoutersMetadata);
+      expect(routerGenerator.serializeRouters).toHaveBeenCalledWith(
+        expect.any(Array),
+        expect.any(Project),
+      );
+      expect(
+        routerGenerator.generateRoutersStringFromMetadata,
+      ).toHaveBeenCalledWith(mockRoutersMetadata);
       expect(fileUtil.saveOrOverrideFile).toHaveBeenCalled();
       expect(consoleLogger.log).toHaveBeenCalledWith(
         'AppRouter has been updated successfully at "./test.ts".',
-        'TRPC Generator'
+        'TRPC Generator',
       );
     });
 
@@ -166,34 +198,56 @@ describe('TRPCGenerator', () => {
         throw new Error('Test error');
       });
 
-      await trpcGenerator.generateSchemaFile([{name: '/output/path'}]);
+      await trpcGenerator.generateSchemaFile([{ name: '/output/path' }]);
 
-      expect(consoleLogger.warn).toHaveBeenCalledWith('TRPC Generator encountered an error.', expect.any(Error));
+      expect(consoleLogger.warn).toHaveBeenCalledWith(
+        'TRPC Generator encountered an error.',
+        expect.any(Error),
+      );
     });
   });
 
   describe('generateHelpersFile', () => {
     it('should generate helpers file', async () => {
       class TestMiddleware implements TRPCMiddleware {
-        use(opts: MiddlewareOptions<object>): MiddlewareResponse | Promise<MiddlewareResponse> {
+        use(
+          _opts: MiddlewareOptions<object>,
+        ): MiddlewareResponse | Promise<MiddlewareResponse> {
           throw new Error('Method not implemented.');
         }
       }
       class TestContext implements TRPCContext {
-        create(opts: CreateExpressContextOptions): Record<string, unknown> | Promise<Record<string, unknown>> {
+        create(
+          _opts: CreateExpressContextOptions,
+        ): Record<string, unknown> | Promise<Record<string, unknown>> {
           throw new Error('Method not implemented.');
         }
       }
 
       const mockMiddlewares = [{ instance: TestMiddleware, path: 'testPath' }];
-      const mockMiddlewareInterface = { name: 'TestMiddleware', properties: [{ name: 'test', type: 'string' }] };
+      const mockMiddlewareInterface = {
+        name: 'TestMiddleware',
+        properties: [{ name: 'test', type: 'string' }],
+      };
       const mockImportsMap = new Map<string, SourceFileImportsMap>([
-        [TestContext.name, {sourceFile, initializer: sourceFile.getClass(TestContext.name) as ClassDeclaration}]
-      ])
+        [
+          TestContext.name,
+          {
+            sourceFile,
+            initializer: sourceFile.getClass(
+              TestContext.name,
+            ) as ClassDeclaration,
+          },
+        ],
+      ]);
 
       middlewareFactory.getMiddlewares.mockReturnValue(mockMiddlewares);
-      middlewareGenerator.getMiddlewareInterface.mockResolvedValue(mockMiddlewareInterface);
-      contextGenerator.getContextInterface.mockResolvedValue('{ user: string }');
+      middlewareGenerator.getMiddlewareInterface.mockResolvedValue(
+        mockMiddlewareInterface,
+      );
+      contextGenerator.getContextInterface.mockResolvedValue(
+        '{ user: string }',
+      );
       // importScanner.buildSourceFileImportsMap.mockImplementation((arg) => { console.log('arg:', arg); return mockImportsMap; })
       importScanner.buildSourceFileImportsMap.mockReturnValue(mockImportsMap);
 
@@ -212,7 +266,7 @@ describe('TRPCGenerator', () => {
       expect(fileUtil.saveOrOverrideFile).toHaveBeenCalled();
       expect(consoleLogger.log).toHaveBeenCalledWith(
         'Helper types has been updated successfully at "nestjs-trpc/types".',
-        'TRPC Generator'
+        'TRPC Generator',
       );
     });
 
@@ -223,7 +277,10 @@ describe('TRPCGenerator', () => {
 
       await trpcGenerator.generateHelpersFile();
 
-      expect(consoleLogger.warn).toHaveBeenCalledWith('TRPC Generator encountered an error.', expect.any(Error));
+      expect(consoleLogger.warn).toHaveBeenCalledWith(
+        'TRPC Generator encountered an error.',
+        expect.any(Error),
+      );
     });
   });
 });

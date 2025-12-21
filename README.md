@@ -93,12 +93,12 @@ Here's a brief example demonstrating how to use the decorators available in **ne
 
 ```typescript
 // users.router.ts
-import { Inject } from "@nestjs/common";
-import { Router, Query, UseMiddlewares } from "nestjs-trpc-v2";
-import { UserService } from "./user.service";
-import { ProtectedMiddleware } from "./protected.middleware";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { Inject } from '@nestjs/common';
+import { Router, Query, UseMiddlewares } from 'nestjs-trpc-v2';
+import { UserService } from './user.service';
+import { ProtectedMiddleware } from './protected.middleware';
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
 const userSchema = z.object({
   name: z.string(),
@@ -116,8 +116,8 @@ class UserRouter {
       return this.userService.getUsers();
     } catch (error: unknown) {
       throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An error has occured when trying to get users.",
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error has occured when trying to get users.',
         cause: error,
       });
     }

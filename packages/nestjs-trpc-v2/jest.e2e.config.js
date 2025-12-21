@@ -4,12 +4,15 @@ module.exports = {
   roots: ['<rootDir>/test/e2e'],
   testMatch: ['**/*.e2e-spec.ts'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.spec.json',
-      diagnostics: {
-        ignoreCodes: [151001]
-      }
-    }]
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.spec.json',
+        diagnostics: {
+          ignoreCodes: [151001],
+        },
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   collectCoverageFrom: [

@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 permissions:
   contents: write
@@ -74,14 +74,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: "https://registry.npmjs.org"
-          cache: "pnpm"
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: pnpm build
+
+      - name: Check types
+        run: pnpm --filter nestjs-trpc-v2 check-types
+
+      - name: Lint
+        run: pnpm --filter nestjs-trpc-v2 lint
+
+      - name: Check formatting
+        run: pnpm --filter nestjs-trpc-v2 format:check
 
       - name: Run tests
         run: |

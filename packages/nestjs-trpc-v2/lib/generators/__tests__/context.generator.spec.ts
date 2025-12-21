@@ -15,9 +15,9 @@ describe('ContextGenerator', () => {
 
     contextGenerator = module.get<ContextGenerator>(ContextGenerator);
     project = new Project();
-    
+
     sourceFile = project.createSourceFile(
-      "test.ts",
+      'test.ts',
       `
       import { TRPCContext } from './interfaces';
 
@@ -26,7 +26,8 @@ describe('ContextGenerator', () => {
           return { user: { id: '1', name: 'Test' } };
         }
       }
-      `, { overwrite: true }
+      `,
+      { overwrite: true },
     );
   });
 
@@ -35,7 +36,6 @@ describe('ContextGenerator', () => {
   });
 
   describe('getContextInterface', () => {
-
     it('should return the context interface if everything is valid', async () => {
       class TestContext implements TRPCContext {
         create() {
@@ -45,26 +45,32 @@ describe('ContextGenerator', () => {
 
       jest.spyOn(project, 'addSourceFileAtPath').mockReturnValue(sourceFile);
 
-      const result = await contextGenerator.getContextInterface(sourceFile, TestContext);
+      const result = await contextGenerator.getContextInterface(
+        sourceFile,
+        TestContext,
+      );
       expect(result).toBe('{ user: { id: string; name: string; }; }');
     });
 
     it('should return null if create method is not found', async () => {
       sourceFile = project.createSourceFile(
-        "test.ts",
+        'test.ts',
         `
         export class InvalidContext {
           // No create method
         }
-        `, { overwrite: true }
+        `,
+        { overwrite: true },
       );
 
       class InvalidContext {}
 
       jest.spyOn(project, 'addSourceFileAtPath').mockReturnValue(sourceFile);
 
-      //@ts-expect-error invalid context passed in
-      const result = await contextGenerator.getContextInterface(sourceFile, InvalidContext);
+      const result = await contextGenerator.getContextInterface(
+        sourceFile,
+        InvalidContext as any,
+      );
       expect(result).toBeNull();
     });
   });

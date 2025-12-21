@@ -16,7 +16,8 @@ describe('NestJS tRPC E2E Tests', () => {
 
     // Manually create the router for testing (without HTTP adapter)
     const { procedure, router } = initTRPC.context().create();
-    const TRPCFactory = (await import('../../lib/factories/trpc.factory')).TRPCFactory;
+    const TRPCFactory = (await import('../../lib/factories/trpc.factory'))
+      .TRPCFactory;
     const trpcFactory = moduleFixture.get(TRPCFactory);
     appRouter = trpcFactory.serializeAppRoutes(router, procedure);
   });

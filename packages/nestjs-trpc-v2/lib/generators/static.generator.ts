@@ -1,5 +1,4 @@
 import {
-  ImportDeclarationStructure,
   SourceFile,
   StructureKind,
   Type,

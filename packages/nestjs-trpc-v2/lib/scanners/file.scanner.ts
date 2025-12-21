@@ -31,7 +31,7 @@ export class FileScanner {
       return this.normalizePath(
         path.resolve(jsFilePath, '..', sourceMap.sources[0]),
       );
-    } catch (error) {
+    } catch {
       // Suppress the warning if in test environment
       if (process.env.NODE_ENV !== 'test') {
         console.warn(
@@ -60,7 +60,7 @@ export class FileScanner {
     let content: string;
     try {
       content = fs.readFileSync(filePath, { encoding: 'utf8' });
-    } catch (error) {
+    } catch {
       throw new Error(`Could not read source file at path: ${filePath}`);
     }
 
@@ -75,7 +75,7 @@ export class FileScanner {
     let sourceMapContent: string;
     try {
       sourceMapContent = fs.readFileSync(sourceMapPath, { encoding: 'utf8' });
-    } catch (error) {
+    } catch {
       throw new Error(
         `Could not read source map file at path: ${sourceMapPath}`,
       );
@@ -83,7 +83,7 @@ export class FileScanner {
 
     try {
       return JSON.parse(sourceMapContent);
-    } catch (error) {
+    } catch {
       throw new Error(
         `Failed to parse source map content from: ${sourceMapPath}`,
       );

@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RouterGenerator } from '../router.generator';
 import { DecoratorGenerator } from '../decorator.generator';
 import { Project, SourceFile } from 'ts-morph';
-import { RoutersFactoryMetadata, } from '../../interfaces/factory.interface';
+import { RoutersFactoryMetadata } from '../../interfaces/factory.interface';
 import {
   DecoratorGeneratorMetadata,
-  ProcedureGeneratorMetadata,
   RouterGeneratorMetadata,
 } from '../../interfaces/generator.interface';
 import { Query, Mutation } from '../../decorators';
@@ -42,9 +41,9 @@ describe('RouterGenerator', () => {
     decoratorGenerator = module.get(DecoratorGenerator);
     procedureGenerator = module.get(ProcedureGenerator);
     project = new Project();
-    
+
     sourceFile = project.createSourceFile(
-      "test.ts",
+      'test.ts',
       `
       import { Query, Mutation } from '../../decorators';
       import { z } from 'zod';
@@ -60,7 +59,8 @@ describe('RouterGenerator', () => {
           return 'test mutation';
         }
       }
-      `, { overwrite: true }
+      `,
+      { overwrite: true },
     );
   });
 
@@ -87,11 +87,11 @@ describe('RouterGenerator', () => {
         alias: 'test',
         path: 'testPath',
         instance: {
-            name: "TestRouter",
-            instance: jest.fn(),
-            alias: 'test',
-            path:"testPath",
-            middlewares: []
+          name: 'TestRouter',
+          instance: jest.fn(),
+          alias: 'test',
+          path: 'testPath',
+          middlewares: [],
         },
         procedures: [
           {
@@ -112,21 +112,26 @@ describe('RouterGenerator', () => {
             params: [],
             middlewares: [],
           },
-        ]
+        ],
       };
 
       const mockTestQueryDecoratorMetadata: DecoratorGeneratorMetadata[] = [
-          { name: 'Query', arguments: {} }
+        { name: 'Query', arguments: {} },
       ];
       const mockTestMutationDecoratorMetadata: DecoratorGeneratorMetadata[] = [
-          { name: 'Mutation', arguments: {} },
+        { name: 'Mutation', arguments: {} },
       ];
 
-      decoratorGenerator.serializeProcedureDecorators.mockReturnValueOnce(mockTestQueryDecoratorMetadata).mockReturnValue(mockTestMutationDecoratorMetadata);
-      
+      decoratorGenerator.serializeProcedureDecorators
+        .mockReturnValueOnce(mockTestQueryDecoratorMetadata)
+        .mockReturnValue(mockTestMutationDecoratorMetadata);
+
       jest.spyOn(project, 'addSourceFileAtPath').mockReturnValue(sourceFile);
 
-      const result = await routerGenerator.serializeRouters([mockRouter], project)
+      const result = await routerGenerator.serializeRouters(
+        [mockRouter],
+        project,
+      );
 
       expect(result).toEqual<Array<RouterGeneratorMetadata>>([
         {
@@ -149,7 +154,7 @@ describe('RouterGenerator', () => {
 
   describe('generateRoutersStringFromMetadata', () => {
     it('should generate router string from metadata', () => {
-        const mockRouterMetadata: Array<RouterGeneratorMetadata> = [
+      const mockRouterMetadata: Array<RouterGeneratorMetadata> = [
         {
           name: 'TestRouter',
           alias: 'test',
@@ -166,16 +171,21 @@ describe('RouterGenerator', () => {
         },
       ];
 
-      procedureGenerator.generateProcedureString.mockReturnValueOnce('testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )');
-      procedureGenerator.generateProcedureString.mockReturnValueOnce('testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )');
+      procedureGenerator.generateProcedureString.mockReturnValueOnce(
+        'testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
+      );
+      procedureGenerator.generateProcedureString.mockReturnValueOnce(
+        'testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
+      );
 
-      const result = routerGenerator.generateRoutersStringFromMetadata(mockRouterMetadata);
+      const result =
+        routerGenerator.generateRoutersStringFromMetadata(mockRouterMetadata);
 
       expect(result).toBe(
         'test: t.router({ ' +
-        'testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any ),\n' +
-        'testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any ) ' +
-        '})'
+          'testQuery: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any ),\n' +
+          'testMutation: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any ) ' +
+          '})',
       );
     });
   });

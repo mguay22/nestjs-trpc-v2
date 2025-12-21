@@ -28,7 +28,12 @@ export class PostRouter {
 
   @Query({ input: z.object({ id: z.number() }), output: postSchema })
   async getPostById(@Input() input: { id: number }) {
-    return { id: input.id, title: 'First Post', content: 'Hello World', authorId: 1 };
+    return {
+      id: input.id,
+      title: 'First Post',
+      content: 'Hello World',
+      authorId: 1,
+    };
   }
 
   @Mutation({ input: createPostSchema, output: postSchema })

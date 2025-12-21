@@ -4,14 +4,17 @@ import { ConsoleLogger } from '@nestjs/common';
 import { MetadataScanner, ModuleRef } from '@nestjs/core';
 import { z } from 'zod';
 import { ProcedureBuilder, TRPCError, initTRPC } from '@trpc/server';
-import { ProcedureFactoryMetadata, ProcedureParamDecoratorType } from '../../interfaces/factory.interface';
+import {
+  ProcedureFactoryMetadata,
+  ProcedureParamDecoratorType,
+} from '../../interfaces/factory.interface';
 import { TRPCMiddleware } from '../../interfaces';
 import { Ctx, Input, UseMiddlewares, Options, Query } from '../../decorators';
 import { ProcedureType } from '../../trpc.enum';
 
 describe('ProcedureFactory', () => {
   let procedureFactory: ProcedureFactory;
-  let metadataScanner: jest.Mocked<MetadataScanner>
+  let metadataScanner: jest.Mocked<MetadataScanner>;
   let moduleRef: ModuleRef;
 
   beforeEach(async () => {
@@ -63,16 +66,19 @@ describe('ProcedureFactory', () => {
         }
       }
 
-
       class UserRouter {
         constructor(private readonly userService: UserService) {}
 
         @Query({
           input: z.object({ userId: z.string() }),
-          output: userSchema
+          output: userSchema,
         })
         @UseMiddlewares(ProtectedMiddleware)
-        async getUserById(@Input("userId") userId: string, @Ctx() ctx: any, @Options() opts: any): Promise<any> {
+        async getUserById(
+          @Input('userId') userId: string,
+          @Ctx() ctx: any,
+          @Options() _opts: any,
+        ): Promise<any> {
           const user = await this.userService.getUser(userId);
           if (ctx.ben) {
             throw new TRPCError({
@@ -88,12 +94,15 @@ describe('ProcedureFactory', () => {
       const mockPrototype = Object.getPrototypeOf(mockInstance);
 
       metadataScanner.getAllMethodNames.mockImplementation(
-        (prototype: object | null) => {
+        (_prototype: object | null) => {
           return ['getUserById'];
-        }
+        },
       );
 
-      const result = procedureFactory.getProcedures(mockInstance, mockPrototype);
+      const result = procedureFactory.getProcedures(
+        mockInstance,
+        mockPrototype,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -133,21 +142,25 @@ describe('ProcedureFactory', () => {
           name: 'getUserById',
           implementation: jest.fn(),
           params: [
-            { type: ProcedureParamDecoratorType.Input, index: 0, key: 'userId' },
-            { type:  ProcedureParamDecoratorType.Ctx, index: 1 },
-            { type:  ProcedureParamDecoratorType.Options, index: 2 },
+            {
+              type: ProcedureParamDecoratorType.Input,
+              index: 0,
+              key: 'userId',
+            },
+            { type: ProcedureParamDecoratorType.Ctx, index: 1 },
+            { type: ProcedureParamDecoratorType.Options, index: 2 },
           ],
         },
       ];
 
-      const mockInstance = { 
+      const mockInstance = {
         constructor: class UserRouter {},
         getUserById: jest.fn(),
       };
 
       const t = initTRPC.context().create();
       const mockProcedureBuilder: ProcedureBuilder<any> = t.procedure;
-      
+
       (moduleRef.get as jest.Mock).mockReturnValue(mockInstance);
 
       const result = procedureFactory.serializeProcedures(
@@ -155,17 +168,19 @@ describe('ProcedureFactory', () => {
         mockInstance,
         'users',
         mockProcedureBuilder,
-        []
+        [],
       );
 
       expect(result).toHaveProperty('getUserById');
-      
+
       expect(typeof result.getUserById).toBe('function');
       expect(result.getUserById._def).toBeDefined();
       expect(result.getUserById._def.inputs).toBeDefined();
       expect(result.getUserById._def.output).toBeDefined();
-      
-      expect(result.getUserById._def.inputs[0]).toEqual(mockProcedures[0].input);
+
+      expect(result.getUserById._def.inputs[0]).toEqual(
+        mockProcedures[0].input,
+      );
       expect(result.getUserById._def.output).toEqual(mockProcedures[0].output);
 
       // The middleware number here is 3 and not 1 because we append the input and output middlewares before the `ProtectedMiddleware`.
