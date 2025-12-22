@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import type { ComponentPropsWithoutRef } from 'react';
 import React, { useState } from 'react';

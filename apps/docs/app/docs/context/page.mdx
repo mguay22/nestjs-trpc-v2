@@ -2,10 +2,8 @@
 title: "NestJS-tRPC Documentation - Context"
 ---
 
-import { Cards, Card, Callout, Tabs, Steps } from 'nextra/components';
-import Table from "../../components/Table";
-import NestJSIcon from '../../public/icons/nestjs.svg';
-import TrpcIcon from '../../public/icons/trpc.svg';
+import { Cards, Callout, Tabs, Steps } from 'nextra/components';
+import Table from "@/components/Table";
 import Link from 'next/link';
 
 # Context
@@ -14,7 +12,7 @@ and is a great place to put things like authentication information, or request c
 
 While context is a key feature in tRPC, with NestJS it takes a back sit to the dependency injected Middelwares and Providers.
 
-<Callout emoji={<TrpcIcon width={25} height={50} className="m-1"/>}>
+<Callout>
   If you are not sure about what is tRPC context, you can dive into those concepts in their <Link href={"https://trpc.io/docs/server/context"} target="blank" className="underline"> official documentation</Link>.
 </Callout>
 

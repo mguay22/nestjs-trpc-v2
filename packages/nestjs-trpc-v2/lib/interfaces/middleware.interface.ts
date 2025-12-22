@@ -1,11 +1,8 @@
-import type { ProcedureType, ProcedureParams } from '@trpc/server';
-import type { MiddlewareResult } from '@trpc/server/dist/core/middleware';
+import type { ProcedureType } from '@trpc/server';
 
 export type MiddlewareResponse =
-  | Promise<MiddlewareResult<ProcedureParams>>
-  | (<$Context>(opts: {
-      ctx: $Context;
-    }) => Promise<MiddlewareResult<ProcedureParams>>);
+  | Promise<any>
+  | (<$Context>(opts: { ctx: $Context }) => Promise<any>);
 
 export type MiddlewareOptions<TContext extends object = object> = {
   ctx: TContext;
@@ -14,9 +11,7 @@ export type MiddlewareOptions<TContext extends object = object> = {
   input: unknown;
   rawInput: unknown;
   meta: unknown;
-  next: (opts?: {
-    ctx: Record<string, unknown>;
-  }) => Promise<MiddlewareResult<ProcedureParams>>;
+  next: (opts?: { ctx: Record<string, unknown> }) => Promise<any>;
 };
 
 export interface TRPCMiddleware {

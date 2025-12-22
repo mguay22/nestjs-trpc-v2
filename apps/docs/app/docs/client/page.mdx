@@ -2,8 +2,7 @@
 title: "NestJS-tRPC Documentation - Client Usage"
 ---
 
-import { Cards, Card, Callout, Tabs } from 'nextra/components';
-import TrpcIcon from '../../public/icons/trpc.svg';
+import { Cards, Callout, Tabs } from 'nextra/components';
 
 # Client Usage
 
@@ -96,7 +95,7 @@ If the input or output Zod schema couldn't be flattened when generating the `App
 A client knows the procedures that are available in your API, and their inputs and outputs. It uses this information to give you autocomplete on your queries and mutations, correctly type the returned data, and show errors if you are writing requests that don't match the shape of your backend.
 
 <Cards>
-    <Card icon={<TrpcIcon width={50} height={50}/>} title={"React Query Integration"} href={"https://trpc.io/docs/client/react"} rel={"nofollow"} arrow/>
-    <Card icon={<TrpcIcon width={50} height={50}/>} title={"Next.js Integration"} href={"https://trpc.io/docs/client/nextjs"} rel={"nofollow"} arrow/>
-    <Card icon={<TrpcIcon width={50} height={50}/>} title={"tRPC Client"} href={"https://trpc.io/docs/client/vanilla"} rel={"nofollow"} arrow/>
+    <Cards.Card title={"React Query Integration"} href={"https://trpc.io/docs/client/react"} rel={"nofollow"} arrow/>
+    <Cards.Card title={"Next.js Integration"} href={"https://trpc.io/docs/client/nextjs"} rel={"nofollow"} arrow/>
+    <Cards.Card title={"tRPC Client"} href={"https://trpc.io/docs/client/vanilla"} rel={"nofollow"} arrow/>
 </Cards>

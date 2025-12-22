@@ -1,9 +1,15 @@
-const withNextra = require('nextra')({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.jsx',
+import nextra from 'nextra';
+
+const withNextra = nextra({
+  defaultShowCopyCode: true,
+  mdxOptions: {
+    rehypePlugins: [],
+  },
 });
-module.exports = withNextra({
+
+export default withNextra({
   transpilePackages: ['geist'],
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -32,6 +38,3 @@ module.exports = withNextra({
     return config;
   },
 });
-
-// If you have other Next.js configurations, you can pass them as the parameter:
-// module.exports = withNextra({ /* other next.js config */ })

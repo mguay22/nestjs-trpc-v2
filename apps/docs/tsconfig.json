@@ -15,12 +15,24 @@
     "outDir": "./next",
     "rootDir": "./",
     "baseUrl": "./",
-    "jsx": "preserve",
-    "incremental": true
+    "jsx": "react-jsx",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "paths": {
-    "@/*": ["./*"]
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "svgr.d.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "svgr.d.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

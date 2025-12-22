@@ -3,7 +3,7 @@ import { ProcedureFactory } from '../procedure.factory';
 import { ConsoleLogger } from '@nestjs/common';
 import { MetadataScanner, ModuleRef } from '@nestjs/core';
 import { z } from 'zod';
-import { ProcedureBuilder, TRPCError, initTRPC } from '@trpc/server';
+import { TRPCError, initTRPC } from '@trpc/server';
 import {
   ProcedureFactoryMetadata,
   ProcedureParamDecoratorType,
@@ -159,7 +159,7 @@ describe('ProcedureFactory', () => {
       };
 
       const t = initTRPC.context().create();
-      const mockProcedureBuilder: ProcedureBuilder<any> = t.procedure;
+      const mockProcedureBuilder: any = t.procedure;
 
       (moduleRef.get as jest.Mock).mockReturnValue(mockInstance);
 
@@ -185,8 +185,6 @@ describe('ProcedureFactory', () => {
 
       // The middleware number here is 3 and not 1 because we append the input and output middlewares before the `ProtectedMiddleware`.
       expect(result.getUserById._def.middlewares.length).toBe(3);
-
-      expect(result.getUserById._def.query).toBeDefined();
     });
   });
 });

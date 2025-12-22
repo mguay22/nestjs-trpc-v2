@@ -2,10 +2,8 @@
 title: "NestJS-tRPC Documentation - Routers"
 ---
 
-import { Cards, Card, Callout, Tabs } from 'nextra/components';
-import Table from "../../components/Table";
-import NestJSIcon from '../../public/icons/nestjs.svg';
-import TrpcIcon from '../../public/icons/trpc.svg';
+import { Cards, Callout, Tabs } from 'nextra/components';
+import Table from "@/components/Table";
 import Link from 'next/link';
 
 # Routers
@@ -20,8 +18,8 @@ Routers works exactly like the native NestJS controllers, but with some tRPC syn
 </Callout>
 <div className={"w-full router-cards"}>
   <Cards>
-    <Card icon={<NestJSIcon width={50} height={50}/>} title={"What are NestJS Controllers"} href={"https://docs.nestjs.com/controllers"} arrow/>
-    <Card icon={<TrpcIcon width={50} height={50}/>} title={"What are tRPC Procedures"} href={"https://trpc.io/docs/server/procedures"} arrow/>
+    <Cards.Card title={"What are NestJS Controllers"} href={"https://docs.nestjs.com/controllers"} arrow/>
+    <Cards.Card title={"What are tRPC Procedures"} href={"https://trpc.io/docs/server/procedures"} arrow/>
   </Cards>
 </div>
 
