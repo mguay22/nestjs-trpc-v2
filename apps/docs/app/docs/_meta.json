@@ -42,9 +42,5 @@
     "title": "⇲ NestJS Documentation",
     "href": "https://docs.nestjs.com",
     "newWindow": true
-  },
-  "docs": {
-    "title": "Docs",
-    "type": "page"
   }
 }
