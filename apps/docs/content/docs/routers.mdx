@@ -1,8 +1,7 @@
 ---
-title: "NestJS-tRPC Documentation - Routers"
+title: "Routers"
 ---
 
-import { Cards, Callout, Tabs } from 'nextra/components';
 import Table from "@/components/Table";
 import Link from 'next/link';
 
@@ -11,25 +10,22 @@ import Link from 'next/link';
 Routes are responsible for handling incoming requests and returning responses to the client.
 Routers works exactly like the native NestJS controllers, but with some tRPC syntax.
 
-<br/>
-
 <Callout>
   If you are not sure about the basic concepts of NestJS controllers and tRPC procedures, you can dive into those concepts in their official documentation.
 </Callout>
-<div className={"w-full router-cards"}>
-  <Cards>
-    <Cards.Card title={"What are NestJS Controllers"} href={"https://docs.nestjs.com/controllers"} arrow/>
-    <Cards.Card title={"What are tRPC Procedures"} href={"https://trpc.io/docs/server/procedures"} arrow/>
-  </Cards>
-</div>
+
+<Cards>
+  <Card title="What are NestJS Controllers" href="https://docs.nestjs.com/controllers" />
+  <Card title="What are tRPC Procedures" href="https://trpc.io/docs/server/procedures" />
+</Cards>
 
 #### Writing Routers
 Let's compare the most basic functionality of tRPC and see how we implement it in NestJS with our adapter, in the following
 example we'll create a simple router with a single route that will get us a list of dogs from our imaginary database.
 
-<Tabs items={["NestJS Adapter Router", 'tRPC Router']}>
-  <Tabs.Tab>
-    ```typescript filename="dogs.router.ts" copy
+<Tabs items={["NestJS Adapter Router", "tRPC Router"]}>
+  <Tab value="NestJS Adapter Router">
+    ```typescript title="dogs.router.ts"
     import { DatabaseService } from "./database.service.ts";
     import { Router, Query } from 'nestjs-trpc-v2';
     import { Inject } from '@nestjs/common';
@@ -51,9 +47,9 @@ example we'll create a simple router with a single route that will get us a list
       }
     }
     ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-    ```typescript filename="server.ts" copy
+  </Tab>
+  <Tab value="tRPC Router">
+    ```typescript title="server.ts"
     import { db } from './db';
     import { publicProcedure, router } from './trpc';
     import { z } from 'zod';
@@ -75,7 +71,7 @@ example we'll create a simple router with a single route that will get us a list
       }
     });
     ```
-  </Tabs.Tab>
+  </Tab>
 </Tabs>
 
 In that example we used the `@Router(){:tsx}` decorator, which is **required** to define a basic router.<br/>

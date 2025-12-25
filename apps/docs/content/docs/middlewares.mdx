@@ -1,40 +1,40 @@
 ---
-title: "NestJS-tRPC Documentation - Middlewares"
+title: "Middlewares"
 ---
-
-import { Callout, Cards, Tabs, Steps } from 'nextra/components'
 
 # Middlewares
 
-With this adapter you can create procedure middlewares, 
-These middlewares can be added to a router class, either globally for all procedures in that router or individually to specific procedures using the `@UseMiddlewares(){:tsx}` decorator.
+With this adapter you can create procedure middlewares,
+These middlewares can be added to a router class, either globally for all procedures in that router or individually to specific procedures using the `@UseMiddlewares()` decorator.
 
-The `@UseMiddlewares(){:tsx}` decorator accepts multiple middlewares, executing them in the provided order. For instance:
+The `@UseMiddlewares()` decorator accepts multiple middlewares, executing them in the provided order. For instance:
 ```ts
 @UseMiddlewares(LoggingMiddleware, AuthMiddleware)
 ```
-In this example, `LoggingMiddleware` runs first, followed by `AuthMiddleware`.  <br/>
-If both the router and the procedure have middlewares defined via `@UseMiddlewares(){:tsx}`, the router-level middlewares will execute first, followed by the procedure-level middlewares, provided there are no duplicates.<br/>
+In this example, `LoggingMiddleware` runs first, followed by `AuthMiddleware`.
+
+If both the router and the procedure have middlewares defined via `@UseMiddlewares()`, the router-level middlewares will execute first, followed by the procedure-level middlewares, provided there are no duplicates.
+
 This middleware approach in tRPC is similar to the `Guards` and `Middlewares` concept found in NestJS.
 
 <Callout>
   If you are not sure about the basic **concepts** of NestJS or tRPC middlewares, you can dive into those concepts in their official documentation.
 </Callout>
-<div className={"w-full router-cards"}>
-  <Cards>
-    <Cards.Card title={"What are NestJS Middlewares"} href={"https://docs.nestjs.com/middleware"} arrow/>
-    <Cards.Card title={"What are tRPC Middlewares"} href={"https://trpc.io/docs/server/middlewares"} arrow/>
-  </Cards>
-</div>
+
+<Cards>
+  <Card title="What are NestJS Middlewares" href="https://docs.nestjs.com/middleware" />
+  <Card title="What are tRPC Middlewares" href="https://trpc.io/docs/server/middlewares" />
+</Cards>
 
 <Steps>
+<Step>
 ### Creating a Middleware
 You can implement a middleware in a class with an `@Injectable()` decorator. The class should implement the `TRPCMiddleware` interface.
 Let's start by implementing a simple logger middleware.
 
-<Tabs items={["NestJS Adapter Middleware", 'tRPC Middleware']}>
-  <Tabs.Tab>
-    ```typescript filename="logger.middleware.ts" copy
+<Tabs items={["NestJS Adapter Middleware", "tRPC Middleware"]}>
+  <Tab value="NestJS Adapter Middleware">
+    ```typescript title="logger.middleware.ts"
     import { TRPCMiddleware, TRPCMiddlewareOptions } from 'nestjs-trpc-v2';
     import { Inject, Injectable, ConsoleLogger } from '@nestjs/common';
     import type { Context } from "nestjs-trpc-v2/types";
@@ -62,9 +62,9 @@ Let's start by implementing a simple logger middleware.
       }
     }
     ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-    ```typescript filename="server.ts" copy
+  </Tab>
+  <Tab value="tRPC Middleware">
+    ```typescript title="server.ts"
     export const loggedProcedure = publicProcedure.use(async (opts) => {
       const start = Date.now();
 
@@ -80,16 +80,20 @@ Let's start by implementing a simple logger middleware.
       return result;
     });
     ```
-  </Tabs.Tab>
+  </Tab>
 </Tabs>
+</Step>
 
+<Step>
 ### Middleware registration
-Similar to NestJS providers, we need to register the middleware with Nest so that it can perform the injection and type generation. 
-We do this by editing our module file and adding the middleware to the `providers` array of the `@Module(){:tsx}` decorator.
+Similar to NestJS providers, we need to register the middleware with Nest so that it can perform the injection and type generation.
+We do this by editing our module file and adding the middleware to the `providers` array of the `@Module()` decorator.
+</Step>
 
+<Step>
 ### Applying middleware
-To use the middleware in your procedure instead of the default `publicProcedure`, pass the class to the `@UseMiddlewares(){:tsx}` method decorator.
-```typescript {17} filename="dogs.router.ts" copy showLineNumbers
+To use the middleware in your procedure instead of the default `publicProcedure`, pass the class to the `@UseMiddlewares()` method decorator.
+```typescript title="dogs.router.ts"
 import { DatabaseService } from "./database.service.ts";
 import { LoggedMiddleware } from "./logged.middleware.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
@@ -114,6 +118,7 @@ export class DogsRouter {
   }
 }
 ```
+</Step>
 </Steps>
 
 
@@ -124,9 +129,9 @@ With middlewares you can change and inject certain parameters in the context to 
 When you modify the base context with a middleware, a new type will be generated with the middleware name and a `Context` suffix, for example if you have an `AuthMiddleware`, the generated type would be named `AuthMiddlewareContext`.
 
 Then you can import those types and use throughout your procedures from `nestjs-trpc-v2/types`, for example:
-<Tabs items={["User Router", 'Auth Middleware', "Generated Interface"]}>
-  <Tabs.Tab>
-```typescript /AuthMiddlewareContext/ filename="user.router.ts" copy
+<Tabs items={["User Router", "Auth Middleware", "Generated Interface"]}>
+  <Tab value="User Router">
+```typescript title="user.router.ts"
 import type { AuthMiddlewareContext } from 'nestjs-trpc-v2/types';
 import { UserService } from "./user.service.ts";
 import { AuthMiddleware } from "./auth.middleware.ts";
@@ -152,9 +157,9 @@ export class UserRouter {
   }
 }
 ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-```typescript {22-28} filename="auth.middleware.ts" copy
+  </Tab>
+  <Tab value="Auth Middleware">
+```typescript title="auth.middleware.ts"
 import {
   MiddlewareOptions,
   MiddlewareResponse,
@@ -186,16 +191,16 @@ export class AuthMiddleware implements TRPCMiddleware {
   }
 }
 ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-```typescript filename="nestjs-trpc-v2/types" copy
+  </Tab>
+  <Tab value="Generated Interface">
+```typescript title="nestjs-trpc-v2/types"
 export interface AuthMiddlewareContext extends Context {
   auth: {
     userId: string;
   }
 }
 ```
-  </Tabs.Tab>
+  </Tab>
 </Tabs>
 
 #### Dependency injection

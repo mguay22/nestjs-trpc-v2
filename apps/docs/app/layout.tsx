@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 import { Analytics } from '@vercel/analytics/react';
 import { GeistSans } from 'geist/font/sans';
 import type { ReactNode } from 'react';
@@ -6,9 +7,11 @@ import type { ReactNode } from 'react';
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>
-      <body>
-        <Analytics />
-        {children}
+      <body className="flex flex-col min-h-screen">
+        <RootProvider>
+          <Analytics />
+          {children}
+        </RootProvider>
       </body>
     </html>
   );

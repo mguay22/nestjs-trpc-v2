@@ -1,8 +1,7 @@
 ---
-title: "NestJS-tRPC Documentation - First Steps and Core Concepts"
+title: "First Steps"
 ---
 
-import { Callout, FileTree } from 'nextra/components';
 import Link from 'next/link';
 import Table from '@/components/Table';
 
@@ -11,21 +10,21 @@ import Table from '@/components/Table';
 In this documentation we will go through the basic concepts and recommended file structure of this adapter,
 our main goal developing this adapter was to make it synonymous with NestJS and it's opinionated approach and concepts.
 
-<Callout> If you are looking for an installation guide for this adapter, check out our <Link href="/docs" className="underline">Setup Guide</Link>.</Callout>
+<Callout>If you are looking for an installation guide for this adapter, check out our <Link href="/docs" className="underline">Setup Guide</Link>.</Callout>
 
 ### Basic File Structure
 In **NestJS tRPC** we take a similar approach to how NestJS implements it's routing system, meaning the file structure should remain similar.
 
-<FileTree>
-  <FileTree.Folder name={"src"} open >
-    <FileTree.File name={"app.router.ts"}/>
-    <FileTree.File name={"app.middleware.ts"}/>
-    <FileTree.File name={"app.context.ts"}/>
-    <FileTree.File name={"app.service.ts"}/>
-    <FileTree.File name={"app.module.ts"}/>
-    <FileTree.File name={"main.ts"}/>
-  </FileTree.Folder>
-</FileTree>
+<Files>
+  <Folder name="src" defaultOpen>
+    <File name="app.router.ts" />
+    <File name="app.middleware.ts" />
+    <File name="app.context.ts" />
+    <File name="app.service.ts" />
+    <File name="app.module.ts" />
+    <File name="main.ts" />
+  </Folder>
+</Files>
 
 Here's a brief overview of those core files:
 <br/>

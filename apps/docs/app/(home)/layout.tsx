@@ -1,49 +1,7 @@
-import { Layout, Navbar } from 'nextra-theme-docs';
-import { Banner } from 'nextra/components';
-import { getPageMap } from 'nextra/page-map';
-import 'nextra-theme-docs/style.css';
-import { Footer } from '../../components/Footer';
+import { HomeLayout } from 'fumadocs-ui/layouts/home';
+import { baseOptions } from '@/lib/layout.shared';
+import type { ReactNode } from 'react';
 
-export default async function HomeLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pageMap = await getPageMap('/');
-
-  return (
-    <Layout
-      pageMap={pageMap}
-      docsRepositoryBase="https://github.com/mguay22/nestjs-trpc-v2"
-      darkMode={false}
-      banner={
-        <Banner storageKey="v2-fork" dismissible>
-          <a href="https://github.com/mguay22/nestjs-trpc-v2" target="_blank">
-            ⚡ This is a maintained fork: nestjs-trpc-v2 - Active development
-            with modern tooling →
-          </a>
-        </Banner>
-      }
-      navbar={
-        <Navbar
-          logo={
-            <div className="flex items-center gap-2 font-bold">
-              <img
-                src="/logo.png"
-                alt="nestjs-trpc logo"
-                width={40}
-                height={40}
-              />
-              <span>NestJS tRPC v2</span>
-            </div>
-          }
-          projectLink="https://github.com/mguay22/nestjs-trpc-v2"
-          chatLink="https://discord.gg/trpc-867764511159091230"
-        />
-      }
-      footer={<Footer />}
-    >
-      {children}
-    </Layout>
-  );
+export default function Layout({ children }: { children: ReactNode }) {
+  return <HomeLayout {...baseOptions}>{children}</HomeLayout>;
 }

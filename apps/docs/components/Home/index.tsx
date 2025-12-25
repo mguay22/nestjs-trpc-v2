@@ -75,7 +75,7 @@ export default function Home() {
             <button
               type={'button'}
               className={
-                'flex py-4 px-6 gap-2 bg-gray text-[#000] rounded-full items-center group/docs transition-all hover:bg-gray/80'
+                'flex py-4 px-6 gap-2 bg-white text-black rounded-full items-center group/docs transition-all hover:bg-white/80'
               }
             >
               <p>Documentation</p>
