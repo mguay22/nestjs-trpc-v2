@@ -16,7 +16,7 @@ export const baseOptions: BaseLayoutProps = {
   links: [
     {
       type: 'icon',
-      label: 'Discord',
+      text: 'Discord',
       icon: (
         <svg
           role="img"
