@@ -40,7 +40,7 @@ export class ProcedureGenerator {
 
   public flattenZodSchema(
     node: Node,
-    sourceFile: SourceFile | null,
+    sourceFile: SourceFile,
     project: Project,
     schema: string,
   ): string {
