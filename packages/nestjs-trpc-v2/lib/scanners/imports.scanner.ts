@@ -60,7 +60,7 @@ export class ImportsScanner {
 
         const resolvedSourceFile =
           importedSourceFile.getFilePath().endsWith('index.ts') &&
-            !importedSourceFile.getVariableDeclaration(name)
+          !importedSourceFile.getVariableDeclaration(name)
             ? this.resolveBarrelFileImport(importedSourceFile, name, project)
             : importedSourceFile;
 
@@ -159,8 +159,7 @@ export class ImportsScanner {
       }
 
       // Fallback: Convert .js/.d.ts to .ts if possible
-      const tsPath = resolvedPath
-        .replace(/(\.d\.ts|\.js)$/, '.ts');
+      const tsPath = resolvedPath.replace(/(\.d\.ts|\.js)$/, '.ts');
 
       if (fs.existsSync(tsPath)) {
         return tsPath;
@@ -174,31 +173,22 @@ export class ImportsScanner {
   }
 
   private findTypeScriptSource(compiledPath: string): string | undefined {
-    // If it's a .d.ts file in dist/, try to find the source in src/
-    // Example: /path/to/package/dist/index.d.ts -> /path/to/package/src/index.ts
-    if (compiledPath.includes('/dist/')) {
-      const srcPath = compiledPath
-        .replace('/dist/', '/src/')
+    // Normalize path separators to forward slashes for consistent matching
+    const normalizedPath = compiledPath.replace(/\\/g, '/');
+
+    // Try common output directory patterns: dist/, lib/, build/, out/
+    // Use regex to find and replace only the first matching output directory
+    const outputDirPattern = /\/(dist|lib|build|out)\//;
+    const match = normalizedPath.match(outputDirPattern);
+
+    if (match) {
+      const srcPath = normalizedPath
+        .replace(outputDirPattern, '/src/')
         .replace(/\.d\.ts$/, '.ts')
         .replace(/\.js$/, '.ts');
 
       if (fs.existsSync(srcPath)) {
         return srcPath;
-      }
-    }
-
-    // Try other common patterns: lib/, build/, out/
-    const patterns = ['/lib/', '/build/', '/out/'];
-    for (const pattern of patterns) {
-      if (compiledPath.includes(pattern)) {
-        const srcPath = compiledPath
-          .replace(pattern, '/src/')
-          .replace(/\.d\.ts$/, '.ts')
-          .replace(/\.js$/, '.ts');
-
-        if (fs.existsSync(srcPath)) {
-          return srcPath;
-        }
       }
     }
 
@@ -233,6 +223,7 @@ export class ImportsScanner {
                   return tsSource ?? sourcePath;
                 }
               }
+            }
           }
 
           // Fallback: try src/index.ts
@@ -243,7 +234,7 @@ export class ImportsScanner {
         } catch (err) {
           console.error(
             `Failed to read or parse package.json at ${packageJsonPath}:`,
-            err instanceof Error ? err.message : err
+            err instanceof Error ? err.message : err,
           );
           // Continue searching for source file
         }
