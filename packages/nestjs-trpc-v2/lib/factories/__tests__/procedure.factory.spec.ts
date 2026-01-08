@@ -186,5 +186,91 @@ describe('ProcedureFactory', () => {
       // The middleware number here is 3 and not 1 because we append the input and output middlewares before the `ProtectedMiddleware`.
       expect(result.getUserById._def.middlewares.length).toBe(3);
     });
+
+    it('should serialize subscription procedures without output validation', () => {
+      const notificationSchema = z.object({
+        id: z.string(),
+        message: z.string(),
+      });
+
+      const mockProcedures: Array<ProcedureFactoryMetadata> = [
+        {
+          input: z.object({ lastEventId: z.string().optional() }),
+          output: notificationSchema,
+          type: ProcedureType.Subscription as any,
+          middlewares: [],
+          name: 'onNotification',
+          implementation: jest.fn(),
+          params: [
+            {
+              type: ProcedureParamDecoratorType.Input,
+              index: 0,
+            },
+            { type: ProcedureParamDecoratorType.Signal, index: 1 },
+          ],
+        },
+      ];
+
+      const mockInstance = {
+        constructor: class NotificationRouter {},
+        onNotification: jest.fn(),
+      };
+
+      const t = initTRPC.context().create();
+      const mockProcedureBuilder: any = t.procedure;
+
+      (moduleRef.get as jest.Mock).mockReturnValue(mockInstance);
+
+      const result = procedureFactory.serializeProcedures(
+        mockProcedures,
+        mockInstance,
+        'notifications',
+        mockProcedureBuilder,
+        [],
+      );
+
+      expect(result).toHaveProperty('onNotification');
+      expect(typeof result.onNotification).toBe('function');
+      expect(result.onNotification._def).toBeDefined();
+      expect(result.onNotification._def.inputs).toBeDefined();
+      expect(result.onNotification._def.type).toBe('subscription');
+      // Output should NOT be set for subscriptions (tRPC limitation)
+      expect(result.onNotification._def.output).toBeUndefined();
+    });
+
+    it('should create subscription with Signal param in params array', () => {
+      const mockProcedures: Array<ProcedureFactoryMetadata> = [
+        {
+          input: undefined,
+          output: undefined,
+          type: ProcedureType.Subscription as any,
+          middlewares: [],
+          name: 'onEvents',
+          implementation: jest.fn(),
+          params: [{ type: ProcedureParamDecoratorType.Signal, index: 0 }],
+        },
+      ];
+
+      const mockInstance = {
+        constructor: class EventRouter {},
+        onEvents: jest.fn(),
+      };
+
+      const t = initTRPC.context().create();
+      const mockProcedureBuilder: any = t.procedure;
+
+      (moduleRef.get as jest.Mock).mockReturnValue(mockInstance);
+
+      const result = procedureFactory.serializeProcedures(
+        mockProcedures,
+        mockInstance,
+        'events',
+        mockProcedureBuilder,
+        [],
+      );
+
+      expect(result).toHaveProperty('onEvents');
+      expect(result.onEvents._def.type).toBe('subscription');
+    });
   });
 });

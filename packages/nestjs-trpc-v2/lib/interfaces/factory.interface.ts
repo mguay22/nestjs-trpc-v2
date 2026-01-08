@@ -10,6 +10,7 @@ export enum ProcedureParamDecoratorType {
   RawInput = 'rawInput',
   Type = 'type',
   Path = 'path',
+  Signal = 'signal',
 }
 
 export type ProcedureImplementation = ({

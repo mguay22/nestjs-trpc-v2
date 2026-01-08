@@ -66,5 +66,40 @@ describe('ProcedureGenerator', () => {
         );
       });
     });
+
+    describe('for a subscription', () => {
+      it('should generate router string from metadata', () => {
+        const mockProcedure: ProcedureGeneratorMetadata = {
+          name: 'testSubscription',
+          decorators: [{ name: 'Subscription', arguments: {} }],
+        };
+
+        const result =
+          procedureGenerator.generateProcedureString(mockProcedure);
+
+        expect(result).toBe(
+          'testSubscription: publicProcedure.subscription(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
+        );
+      });
+
+      it('should generate subscription with input schema', () => {
+        const mockProcedure: ProcedureGeneratorMetadata = {
+          name: 'onNotification',
+          decorators: [
+            {
+              name: 'Subscription',
+              arguments: { input: 'z.object({ lastEventId: z.string() })' },
+            },
+          ],
+        };
+
+        const result =
+          procedureGenerator.generateProcedureString(mockProcedure);
+
+        expect(result).toBe(
+          'onNotification: publicProcedure.input(z.object({ lastEventId: z.string() })).subscription(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any )',
+        );
+      });
+    });
   });
 });

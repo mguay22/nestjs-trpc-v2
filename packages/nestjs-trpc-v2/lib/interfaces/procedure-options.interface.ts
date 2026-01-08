@@ -5,4 +5,5 @@ export type ProcedureOptions = {
   type: string;
   path: string;
   rawInput: string;
+  signal?: AbortSignal;
 };

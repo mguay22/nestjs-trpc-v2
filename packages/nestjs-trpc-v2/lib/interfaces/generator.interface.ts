@@ -20,7 +20,7 @@ export interface ProcedureGeneratorMetadata {
 }
 
 export interface DecoratorGeneratorMetadata {
-  name: 'Query' | 'Mutation';
+  name: 'Query' | 'Mutation' | 'Subscription';
   arguments: {
     input?: string;
     output?: string;

@@ -26,7 +26,11 @@ export class DecoratorGenerator {
       (array, decorator) => {
         const decoratorName = decorator.getName();
 
-        if (decoratorName === 'Query' || decoratorName === 'Mutation') {
+        if (
+          decoratorName === 'Query' ||
+          decoratorName === 'Mutation' ||
+          decoratorName === 'Subscription'
+        ) {
           const input = this.getDecoratorPropertyValue(
             decorator,
             'input',

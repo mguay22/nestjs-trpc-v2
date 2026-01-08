@@ -24,7 +24,8 @@ export class ProcedureGenerator {
     const decorator = decorators.find(
       (decorator) =>
         decorator.name === ProcedureType.Mutation ||
-        decorator.name === ProcedureType.Query,
+        decorator.name === ProcedureType.Query ||
+        decorator.name === ProcedureType.Subscription,
     );
 
     if (!decorator) {

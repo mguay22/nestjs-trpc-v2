@@ -11,10 +11,8 @@ describe('NestJS tRPC E2E Tests', () => {
       imports: [AppModule],
     }).compile();
 
-    // Initialize the module (triggers onModuleInit)
     await moduleFixture.init();
 
-    // Manually create the router for testing (without HTTP adapter)
     const { procedure, router } = initTRPC.context().create();
     const TRPCFactory = (await import('../../lib/factories/trpc.factory'))
       .TRPCFactory;
@@ -105,6 +103,64 @@ describe('NestJS tRPC E2E Tests', () => {
       expect(appRouter.postRouter.getPosts).toBeDefined();
       expect(appRouter.postRouter.getPostById).toBeDefined();
       expect(appRouter.postRouter.createPost).toBeDefined();
+    });
+
+    it('should have registered notification router with subscriptions', () => {
+      expect(appRouter.notificationRouter).toBeDefined();
+      expect(appRouter.notificationRouter.onNotification).toBeDefined();
+      expect(
+        appRouter.notificationRouter.onNotificationWithInput,
+      ).toBeDefined();
+    });
+  });
+
+  describe('NotificationRouter (Subscriptions)', () => {
+    it('should stream notifications', async () => {
+      const caller = appRouter.createCaller({});
+      const notifications: Array<{
+        id: string;
+        message: string;
+        timestamp: number;
+      }> = [];
+
+      const generator = await (
+        caller.notificationRouter.onNotification as any
+      )();
+
+      for await (const notification of generator) {
+        notifications.push(notification);
+        if (notifications.length >= 3) {
+          break;
+        }
+      }
+
+      expect(notifications).toHaveLength(3);
+      expect(notifications[0]).toHaveProperty('id');
+      expect(notifications[0]).toHaveProperty('message');
+      expect(notifications[0]).toHaveProperty('timestamp');
+    });
+
+    it('should stream notifications with input', async () => {
+      const caller = appRouter.createCaller({});
+      const notifications: Array<{
+        id: string;
+        message: string;
+        timestamp: number;
+      }> = [];
+
+      const generator = await (
+        caller.notificationRouter.onNotificationWithInput as any
+      )({ lastEventId: '10' });
+
+      for await (const notification of generator) {
+        notifications.push(notification);
+        if (notifications.length >= 2) {
+          break;
+        }
+      }
+
+      expect(notifications).toHaveLength(2);
+      expect(parseInt(notifications[0].id, 10)).toBeGreaterThanOrEqual(10);
     });
   });
 });

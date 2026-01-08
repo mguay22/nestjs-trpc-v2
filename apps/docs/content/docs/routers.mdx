@@ -1,8 +1,8 @@
 ---
-title: "Routers"
+title: 'Routers'
 ---
 
-import Table from "@/components/Table";
+import Table from '@/components/Table';
 import Link from 'next/link';
 
 # Routers
@@ -11,15 +11,23 @@ Routes are responsible for handling incoming requests and returning responses to
 Routers works exactly like the native NestJS controllers, but with some tRPC syntax.
 
 <Callout>
-  If you are not sure about the basic concepts of NestJS controllers and tRPC procedures, you can dive into those concepts in their official documentation.
+  If you are not sure about the basic concepts of NestJS controllers and tRPC
+  procedures, you can dive into those concepts in their official documentation.
 </Callout>
 
 <Cards>
-  <Card title="What are NestJS Controllers" href="https://docs.nestjs.com/controllers" />
-  <Card title="What are tRPC Procedures" href="https://trpc.io/docs/server/procedures" />
+  <Card
+    title="What are NestJS Controllers"
+    href="https://docs.nestjs.com/controllers"
+  />
+  <Card
+    title="What are tRPC Procedures"
+    href="https://trpc.io/docs/server/procedures"
+  />
 </Cards>
 
 #### Writing Routers
+
 Let's compare the most basic functionality of tRPC and see how we implement it in NestJS with our adapter, in the following
 example we'll create a simple router with a single route that will get us a list of dogs from our imaginary database.
 
@@ -47,6 +55,7 @@ example we'll create a simple router with a single route that will get us a list
       }
     }
     ```
+
   </Tab>
   <Tab value="tRPC Router">
     ```typescript title="server.ts"
@@ -71,6 +80,7 @@ example we'll create a simple router with a single route that will get us a list
       }
     });
     ```
+
   </Tab>
 </Tabs>
 
@@ -82,14 +92,17 @@ The `@Query(){:tsx}` decorator before the `findAll(){:tsx}` method tells **NestJ
 </Callout>
 
 #### Router registration
-Similar to NestJS providers, we need to register the routers with Nest so that it can perform the injection and type generation. 
+
+Similar to NestJS providers, we need to register the routers with Nest so that it can perform the injection and type generation.
 We do this by editing our module file and adding the routers to the `providers` array of the `@Module(){:tsx}` decorator.
 
 #### Method Decorators
 
 ##### Procedures
+
 While we discussed how to perform data fetching with our adapter, any complete data platform needs a way to modify server-side data as well.
 This can be done by using the right decorator, here is a list of the available procedure decorators:
+
 <br/>
 <Table columns={["Decorator", "Output"]}>
   <Table.Row>
@@ -107,22 +120,30 @@ This can be done by using the right decorator, here is a list of the available p
 </Table>
 
 tRPC procedures may define validation logic for their input and/or output, and validators are also used to infer the types of inputs and outputs in the client-side.
-We can pass those schemas directly to the decorator as shown above.<br/>For me information on how tRPC procedure validation works, check their <Link href={"https://trpc.io/docs/server/validators"} className="underline" target="_blank">official documentation page</Link>.
+We can pass those schemas directly to the decorator as shown above.<br/>For more information on how tRPC procedure validation works, check their <Link href={"https://trpc.io/docs/server/validators"} className="underline" target="\_blank">official documentation page</Link>.
 
 ##### Middlewares
+
 By default every route will be assigned the `publicProcedure` base, but it is possible to use custom middlewares instead our router via the `@UseMiddlewares()` decorator.
-<Table columns={["Decorator", "Output"]}>
+
+<Table columns={['Decorator', 'Output']}>
   <Table.Row>
     <Table.Cell>`@UseMiddlewares(middleware: TRPCMiddleware)`</Table.Cell>
     <Table.Cell>`middleware.query()`</Table.Cell>
   </Table.Row>
 </Table>
-You can read more about the implementation in our <Link href={"/docs/middlewares"} className="underline">Middlewares Guide</Link>.
+You can read more about the implementation in our
+<Link href={'/docs/middlewares'} className="underline">
+  Middlewares Guide
+</Link>
+.
 
 #### Parameter Decorators
+
 In order to grab the request parameters when defining a route method we can use dedicated decorators, such as @Ctx() or @Input(),
 which are available out of the box. Below is a list of the provided decorators and the plain platform-specific objects they represent.
-<br/>
+
+<br />
 <Table>
   <Table.Row>
     <Table.Cell>`@Options()`</Table.Cell>
@@ -148,10 +169,16 @@ which are available out of the box. Below is a list of the provided decorators a
     <Table.Cell>`@Input(key?: string)`</Table.Cell>
     <Table.Cell>`opts.input / opts.input[key]`</Table.Cell>
   </Table.Row>
+  <Table.Row>
+    <Table.Cell>`@Signal()`</Table.Cell>
+    <Table.Cell>`opts.signal` (for subscriptions)</Table.Cell>
+  </Table.Row>
 </Table>
 
 #### Putting it all together
+
 Below is an example of a UserRouter completed with most of the features and decorators mentioned above.
+
 ```typescript filename="user.router.ts" copy
 import { Inject } from '@nestjs/common';
 import { Router, Query, UseMiddlewares, Input } from 'nestjs-trpc-v2';
@@ -193,4 +220,5 @@ export class UserRouter {
 ```
 
 #### Dependency injection
+
 Routers fully supports Dependency Injection. Just as with NestJS providers and controllers, they are able to inject dependencies that are available within the same module. As usual, this is done through the `constructor`.

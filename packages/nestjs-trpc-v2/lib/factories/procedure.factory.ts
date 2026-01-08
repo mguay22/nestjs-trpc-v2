@@ -1,4 +1,4 @@
-import { ConsoleLogger, Inject, Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { MetadataScanner, ModuleRef } from '@nestjs/core';
 import {
   MIDDLEWARES_KEY,
@@ -20,14 +20,11 @@ import { uniqWith, isEqual } from 'lodash';
 
 @Injectable()
 export class ProcedureFactory {
-  @Inject(ConsoleLogger)
-  private readonly consoleLogger!: ConsoleLogger;
-
-  @Inject(MetadataScanner)
-  private readonly metadataScanner!: MetadataScanner;
-
-  @Inject(ModuleRef)
-  private readonly moduleRef!: ModuleRef;
+  constructor(
+    private readonly consoleLogger: ConsoleLogger,
+    private readonly metadataScanner: MetadataScanner,
+    private readonly moduleRef: ModuleRef,
+  ) {}
 
   getProcedures(
     instance: any,
@@ -155,6 +152,9 @@ export class ProcedureFactory {
         if (param.type === ProcedureParamDecoratorType.Options) {
           return opts;
         }
+        if (param.type === ProcedureParamDecoratorType.Signal) {
+          return opts.signal;
+        }
         return (opts as any)[param.type];
       });
   }
@@ -171,15 +171,20 @@ export class ProcedureFactory {
     const procedureWithInput = input
       ? procedureInstance.input(input)
       : procedureInstance;
-    const procedureWithOutput = output
-      ? procedureWithInput.output(output)
-      : procedureWithInput;
 
     const procedureInvocation = (opts: ProcedureOptions) => {
       return routerInstance[procedureName](
         ...this.serializeProcedureParams(opts, params),
       );
     };
+
+    if (type === ProcedureType.Subscription) {
+      return procedureWithInput.subscription(procedureInvocation as any);
+    }
+
+    const procedureWithOutput = output
+      ? procedureWithInput.output(output)
+      : procedureWithInput;
 
     return type === ProcedureType.Mutation
       ? procedureWithOutput.mutation(procedureInvocation as any)

@@ -8,6 +8,17 @@ export type SchemaImports =
   | object
   | ZodTypeAny;
 
+export interface SSEOptions {
+  ping?: {
+    enabled: boolean;
+    intervalMs?: number;
+  };
+  maxDurationMs?: number;
+  client?: {
+    reconnectAfterInactivityMs?: number;
+  };
+}
+
 /**
  * "TRPCModule" options object.
  */
@@ -50,4 +61,10 @@ export interface TRPCModuleOptions {
    * @link https://trpc.io/docs/data-transformers
    */
   transformer?: DataTransformer;
+
+  /**
+   * Server-sent events (SSE) configuration for subscriptions
+   * @link https://trpc.io/docs/client/links/httpSubscriptionLink
+   */
+  sse?: SSEOptions;
 }
