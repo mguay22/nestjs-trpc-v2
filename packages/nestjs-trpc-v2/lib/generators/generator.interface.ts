@@ -1,9 +1,9 @@
-import type { SchemaImports, TRPCContext } from '../interfaces';
-import type { Class } from 'type-fest';
+import type { TRPCModuleOptions } from '../interfaces';
 
 export interface GeneratorModuleOptions {
-  rootModuleFilePath: string;
-  context?: Class<TRPCContext>;
+  rootModuleFilePath: TRPCModuleOptions['autoSchemaFile'];
+  context?: TRPCModuleOptions['context'];
   outputDirPath?: string;
-  schemaFileImports?: Array<SchemaImports>;
+  schemaFileImports?: TRPCModuleOptions['schemaFileImports'];
+  transformer?: TRPCModuleOptions['transformer'];
 }

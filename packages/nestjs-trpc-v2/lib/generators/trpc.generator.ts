@@ -31,9 +31,6 @@ export class TRPCGenerator implements OnModuleInit {
   private readonly HELPER_TYPES_OUTPUT_FILE = 'index.ts';
   private readonly HELPER_TYPES_OUTPUT_PATH = path.join(__dirname, 'types');
 
-  @Inject('TRPC_MODULE_OPTIONS')
-  private readonly trpcOptions!: TRPCModuleOptions;
-
   @Inject(TRPC_MODULE_CALLER_FILE_PATH)
   private readonly moduleCallerFilePath!: string;
 
@@ -76,6 +73,7 @@ export class TRPCGenerator implements OnModuleInit {
 
   public async generateSchemaFile(
     schemaImports?: Array<SchemaImports> | undefined,
+    transformer?: TRPCModuleOptions['transformer'],
   ): Promise<void> {
     try {
       const routers = this.routerFactory.getRouters();
@@ -92,7 +90,7 @@ export class TRPCGenerator implements OnModuleInit {
 
       this.staticGenerator.generateStaticDeclaration(
         this.appRouterSourceFile,
-        this.trpcOptions,
+        transformer,
       );
 
       if (schemaImports != null && schemaImports.length > 0) {

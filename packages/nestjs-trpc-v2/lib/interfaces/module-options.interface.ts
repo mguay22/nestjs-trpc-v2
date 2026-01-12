@@ -19,25 +19,37 @@ export interface SSEOptions {
   };
 }
 
-export interface TransformerOptions {
+export type TransformerOptions =
   /**
-   * Use a data transformer
-   * @link https://trpc.io/docs/data-transformers
+   * Runtime only, no static generation
    */
-  runtime: DataTransformer;
+  | {
+      /**
+       * Use a data transformer
+       * @link https://trpc.io/docs/data-transformers
+       */
+      runtime: DataTransformer;
+      importName?: never;
+      importPath?: never;
+    }
+  /**
+   * Runtime + static generation
+   */
+  | {
+      runtime: DataTransformer;
 
-  /**
-   * Name used when importing the transformer in the generated file.
-   * Example: "superjson", "transformer"
-   */
-  importName?: string;
+      /**
+       * Name used when importing the transformer in the generated file.
+       * Example: "superjson", "transformer"
+       */
+      importName: string;
 
-  /**
-   * Module path used for static code generation.
-   * Example: "superjson", "./transformer"
-   */
-  importPath?: string;
-}
+      /**
+       * Module path used for static code generation.
+       * Example: "superjson", "./transformer"
+       */
+      importPath: string;
+    };
 
 /**
  * "TRPCModule" options object.
