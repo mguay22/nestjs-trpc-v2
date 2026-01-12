@@ -56,7 +56,7 @@ export class TRPCDriver<
   public async start(options: TRPCModuleOptions) {
     const { procedure, router } = initTRPC.context().create({
       ...(options.transformer != null
-        ? { transformer: options.transformer }
+        ? { transformer: options.transformer.runtime }
         : {}),
       ...(options.errorFormatter != null
         ? { errorFormatter: options.errorFormatter }

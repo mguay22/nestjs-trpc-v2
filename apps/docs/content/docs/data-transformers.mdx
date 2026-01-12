@@ -1,0 +1,61 @@
+---
+title: 'Data Transformers'
+---
+
+import Link from 'next/link';
+
+# Data Transformers
+
+Pass through an optional data transformer used by tRPC for request/response serialization.
+
+nestjs-trpc-v2 supports both:
+
+- Runtime usage – passed directly into `initTRPC.create({ transformer })`
+- Static schema generation – injected into the generated AppRouter file with proper imports
+
+<Callout>
+  The transformer option is both a runtime value and a static code-generation
+  reference.
+</Callout>
+
+### Options
+
+```typescript
+export interface TransformerOptions {
+  /**
+   * The actual tRPC DataTransformer used at runtime.
+   * This is passed directly into initTRPC.create({ transformer })
+   */
+  runtime: DataTransformer;
+
+  /**
+   * Optional name used when importing the transformer in the generated file.
+   * Example: "superjson", "transformer"
+   */
+  importName?: string;
+
+  /**
+   * Optional module path used for static code generation.
+   * Example: "superjson", "./transformer"
+   */
+  importPath?: string;
+}
+```
+
+### SuperJSON
+
+SuperJSON allows us to transparently use, e.g., standard Date/Map/Sets over the wire between the server and client. That is, you can return any of these types from your API-resolver and use them in the client without having to recreate the objects from JSON.
+
+```typescript
+import { TRPCModule, TRPCModuleOptions } from 'nestjs-trpc-v2';
+import superjson from 'superjson';
+
+TRPCModule.forRoot({
+  autoSchemaFile: './src/@generated',
+  transformer: {
+    runtime: superjson,
+    importName: 'superjson',
+    importPath: 'superjson',
+  },
+});
+```

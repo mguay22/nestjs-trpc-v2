@@ -5,27 +5,46 @@ import {
   VariableDeclarationKind,
 } from 'ts-morph';
 import { Injectable } from '@nestjs/common';
-import { SourceFileImportsMap } from '../interfaces/generator.interface';
+import {
+  SourceFileImportsMap,
+  StaticGeneratorOptions,
+} from '../interfaces/generator.interface';
 import * as path from 'node:path';
 
 @Injectable()
 export class StaticGenerator {
-  public generateStaticDeclaration(sourceFile: SourceFile): void {
+  public generateStaticDeclaration(
+    sourceFile: SourceFile,
+    options?: StaticGeneratorOptions,
+  ): void {
     sourceFile.addImportDeclaration({
-      kind: StructureKind.ImportDeclaration,
       moduleSpecifier: '@trpc/server',
       namedImports: ['initTRPC'],
     });
+
     sourceFile.addImportDeclaration({
-      kind: StructureKind.ImportDeclaration,
       moduleSpecifier: 'zod',
       namedImports: ['z'],
     });
 
+    if (options?.transformer?.importPath) {
+      sourceFile.addImportDeclaration({
+        moduleSpecifier: options?.transformer.importPath,
+        defaultImport: options?.transformer.importName,
+      });
+    }
+
     sourceFile.addVariableStatements([
       {
         declarationKind: VariableDeclarationKind.Const,
-        declarations: [{ name: 't', initializer: 'initTRPC.create()' }],
+        declarations: [
+          {
+            name: 't',
+            initializer: options?.transformer
+              ? `initTRPC.create({ transformer: ${options.transformer.importName} })`
+              : 'initTRPC.create()',
+          },
+        ],
       },
       {
         declarationKind: VariableDeclarationKind.Const,

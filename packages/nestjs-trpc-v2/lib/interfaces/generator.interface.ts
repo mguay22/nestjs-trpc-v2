@@ -7,6 +7,7 @@ import {
   SourceFile,
   VariableDeclaration,
 } from 'ts-morph';
+import { TransformerOptions } from './module-options.interface';
 
 export interface RouterGeneratorMetadata {
   name: string;
@@ -38,4 +39,8 @@ export interface SourceFileImportsMap {
     | null;
   sourceFile: SourceFile | null;
   moduleSpecifier?: string;
+}
+
+export interface StaticGeneratorOptions {
+  transformer?: TransformerOptions;
 }

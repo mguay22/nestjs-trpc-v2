@@ -41,6 +41,17 @@ describe('TRPCGenerator', () => {
   let project: Project;
   let sourceFile: SourceFile;
 
+  const mockTRPCOptions = {
+    transformer: {
+      runtime: {
+        serialize: jest.fn(),
+        deserialize: jest.fn(),
+      },
+      importName: 'transformer',
+      importPath: './transformer',
+    },
+  };
+
   beforeEach(async () => {
     project = new Project();
     sourceFile = project.createSourceFile('test.ts', '', { overwrite: true });
@@ -48,6 +59,7 @@ describe('TRPCGenerator', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TRPCGenerator,
+        { provide: 'TRPC_MODULE_OPTIONS', useValue: mockTRPCOptions },
         {
           provide: ConsoleLogger,
           useValue: {
@@ -191,6 +203,79 @@ describe('TRPCGenerator', () => {
         'AppRouter has been updated successfully at "./test.ts".',
         'TRPC Generator',
       );
+    });
+
+    it('should generate schema file with transformer options', async () => {
+      const mockRouters = [
+        {
+          name: 'TestRouter',
+          instance: {},
+          alias: 'test',
+          path: 'testPath',
+          middlewares: [],
+        },
+      ];
+
+      routerFactory.getRouters.mockReturnValue(mockRouters);
+      procedureFactory.getProcedures.mockReturnValue([]);
+      routerGenerator.serializeRouters.mockReturnValue([]);
+      routerGenerator.generateRoutersStringFromMetadata.mockReturnValue('');
+
+      (fileUtil.saveOrOverrideFile as jest.Mock).mockResolvedValue(undefined);
+
+      await trpcGenerator.generateSchemaFile();
+
+      expect(
+        (trpcGenerator as any).staticGenerator.generateStaticDeclaration,
+      ).toHaveBeenCalledWith(sourceFile, mockTRPCOptions);
+    });
+
+    it('should work without transformer', async () => {
+      const noTransformerOptions = {};
+
+      const moduleWithoutTransformer: TestingModule =
+        await Test.createTestingModule({
+          providers: [
+            TRPCGenerator,
+            { provide: 'TRPC_MODULE_OPTIONS', useValue: noTransformerOptions },
+            { provide: ConsoleLogger, useValue: consoleLogger },
+            { provide: RouterGenerator, useValue: routerGenerator },
+            { provide: MiddlewareGenerator, useValue: middlewareGenerator },
+            { provide: ContextGenerator, useValue: contextGenerator },
+            {
+              provide: StaticGenerator,
+              useValue: (trpcGenerator as any).staticGenerator,
+            },
+            { provide: RouterFactory, useValue: routerFactory },
+            { provide: MiddlewareFactory, useValue: middlewareFactory },
+            { provide: ProcedureFactory, useValue: procedureFactory },
+            { provide: ImportsScanner, useValue: importScanner },
+            { provide: TYPESCRIPT_PROJECT, useValue: project },
+            {
+              provide: TRPC_MODULE_CALLER_FILE_PATH,
+              useValue: sourceFile.getFilePath(),
+            },
+            {
+              provide: TYPESCRIPT_APP_ROUTER_SOURCE_FILE,
+              useValue: sourceFile,
+            },
+          ],
+        }).compile();
+
+      const trpcGeneratorWithoutTransformer =
+        moduleWithoutTransformer.get<TRPCGenerator>(TRPCGenerator);
+
+      routerFactory.getRouters.mockReturnValue([]);
+      procedureFactory.getProcedures.mockReturnValue([]);
+      routerGenerator.serializeRouters.mockReturnValue([]);
+      routerGenerator.generateRoutersStringFromMetadata.mockReturnValue('');
+
+      await trpcGeneratorWithoutTransformer.generateSchemaFile();
+
+      expect(
+        (trpcGeneratorWithoutTransformer as any).staticGenerator
+          .generateStaticDeclaration,
+      ).toHaveBeenCalledWith(sourceFile, noTransformerOptions);
     });
 
     it('should handle errors', async () => {

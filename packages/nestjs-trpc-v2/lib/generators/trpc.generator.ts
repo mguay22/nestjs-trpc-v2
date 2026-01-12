@@ -8,7 +8,7 @@ import {
 import { Project, SourceFile } from 'ts-morph';
 import { saveOrOverrideFile } from '../utils/ts-morph.util';
 import { RouterGenerator } from './router.generator';
-import { SchemaImports, TRPCContext } from '../interfaces';
+import { SchemaImports, TRPCContext, TRPCModuleOptions } from '../interfaces';
 import { MiddlewareGenerator } from './middleware.generator';
 import type { Class } from 'type-fest';
 import { ContextGenerator } from './context.generator';
@@ -30,6 +30,9 @@ export class TRPCGenerator implements OnModuleInit {
   private rootModuleImportsMap!: Map<string, SourceFileImportsMap>;
   private readonly HELPER_TYPES_OUTPUT_FILE = 'index.ts';
   private readonly HELPER_TYPES_OUTPUT_PATH = path.join(__dirname, 'types');
+
+  @Inject('TRPC_MODULE_OPTIONS')
+  private readonly trpcOptions!: TRPCModuleOptions;
 
   @Inject(TRPC_MODULE_CALLER_FILE_PATH)
   private readonly moduleCallerFilePath!: string;
@@ -87,7 +90,10 @@ export class TRPCGenerator implements OnModuleInit {
         return { name, path, alias, instance: { ...route }, procedures };
       });
 
-      this.staticGenerator.generateStaticDeclaration(this.appRouterSourceFile);
+      this.staticGenerator.generateStaticDeclaration(
+        this.appRouterSourceFile,
+        this.trpcOptions,
+      );
 
       if (schemaImports != null && schemaImports.length > 0) {
         const schemaImportNames: Array<string> = schemaImports.map(

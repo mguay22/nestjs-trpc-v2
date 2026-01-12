@@ -1,5 +1,5 @@
 ---
-title: "Installation Guide"
+title: 'Installation Guide'
 ---
 
 import Link from 'next/link';
@@ -10,14 +10,26 @@ import Table from '@/components/Table';
 This document will guide you through the installation and setting up of **NestJS tRPC v2** in your NestJS project.
 
 <Callout type="info">
-  **NestJS tRPC v2** is a maintained fork of the original nestjs-trpc library. This fork provides active maintenance, updated dependencies, and modern tooling while maintaining API compatibility with the original library.
+  **NestJS tRPC v2** is a maintained fork of the original nestjs-trpc library.
+  This fork provides active maintenance, updated dependencies, and modern
+  tooling while maintaining API compatibility with the original library.
 </Callout>
 
 <Callout type="warn">
   If you don't have a NestJS project setup yet, please visit our
-  <Link href="/docs/nestjs" className="underline">NestJS Quickstart Guide</Link>
+  <Link href="/docs/nestjs" className="underline">
+    NestJS Quickstart Guide
+  </Link>
   or check out the official
-  <Link href="https://docs.nestjs.com" target={'_blank'} rel={"nofollow"} className="underline">NestJS documentation</Link>.
+  <Link
+    href="https://docs.nestjs.com"
+    target={'_blank'}
+    rel={'nofollow'}
+    className="underline"
+  >
+    NestJS documentation
+  </Link>
+  .
 </Callout>
 
 <Steps>
@@ -52,23 +64,24 @@ This document will guide you through the installation and setting up of **NestJS
   <Step>
   ### Initialization
 
-  Once the packages are installed, we can import the `TRPCModule` and configure it with the `forRoot()` static method.
+Once the packages are installed, we can import the `TRPCModule` and configure it with the `forRoot()` static method.
 
-  ```typescript title="app.module.ts"
-  import { Module } from '@nestjs/common';
-  import { TRPCModule } from 'nestjs-trpc-v2';
+```typescript title="app.module.ts"
+import { Module } from '@nestjs/common';
+import { TRPCModule } from 'nestjs-trpc-v2';
 
-  @Module({
-    imports: [
-      TRPCModule.forRoot({
-        autoSchemaFile: './src/@generated',
-      }),
-    ],
-  })
-  export class AppModule {}
-  ```
+@Module({
+  imports: [
+    TRPCModule.forRoot({
+      autoSchemaFile: './src/@generated',
+    }),
+  ],
+})
+export class AppModule {}
+```
 
-  The `forRoot()` method takes an options object as an argument. These options are passed through to the underlying `express` or `fastify` driver. For example, if you want to disable the schema file generation (when deploying to production), you can omit the `autoSchemaFile` option.
+The `forRoot()` method takes an options object as an argument. These options are passed through to the underlying `express` or `fastify` driver. For example, if you want to disable the schema file generation (when deploying to production), you can omit the `autoSchemaFile` option.
+
   </Step>
 
   <Step>
@@ -77,7 +90,8 @@ This document will guide you through the installation and setting up of **NestJS
 </Steps>
 
 <Callout type="error">
-  When setting up **NestJS tRPC** you must set your `"sourceMap": true` in your `compilerOptions` within the `tsconfig.json` configuration file.
+  When setting up **NestJS tRPC** you must set your `"sourceMap": true` in your
+  `compilerOptions` within the `tsconfig.json` configuration file.
 </Callout>
 
 ### Module Options
@@ -113,8 +127,15 @@ const trpcOptions: TRPCModuleOptions = {
     <Table.Cell>-</Table.Cell>
   </Table.Row>
   <Table.Row>
-    <Table.Cell icon>`transformer`</Table.Cell>
-    <Table.Cell>`unknown`</Table.Cell>
+    <Table.Cell icon>
+    <Link
+    href="/docs/module-options#transformer"
+    className="underline"
+  >
+      `transformer`
+  </Link>
+  </Table.Cell>
+    <Table.Cell>`TransformerOptions`</Table.Cell>
     <Table.Cell>-</Table.Cell>
   </Table.Row>
   <Table.Row>
