@@ -144,11 +144,12 @@ export class ProcedureGenerator {
         Node.isPropertyAccessExpression(expression) &&
         !expression.getText().startsWith('z')
       ) {
+        const baseExpression = expression.getExpression();
         const baseSchema = this.flattenZodSchema(
-          expression,
+          baseExpression,
           sourceFile,
           project,
-          expression.getText(),
+          baseExpression.getText(),
           importsMap,
         );
         const propertyName = expression.getName();

@@ -552,4 +552,123 @@ describe('ProcedureGenerator - flattenZodSchema', () => {
       expect(result).toBe('z.tuple([z.string(), z.number()])');
     });
   });
+
+  describe('schema extension handling', () => {
+    it('should flatten schema.extend() without duplicating .extend', () => {
+      project.createSourceFile(
+        '/test/schema.ts',
+        `
+        export const userSchema = z.object({
+          id: z.string(),
+          name: z.string(),
+        });
+
+        export const userWithFollowingSchema = userSchema.extend({
+          isFollowing: z.boolean(),
+        });
+        `,
+        { overwrite: true },
+      );
+
+      const sourceFile = project.createSourceFile(
+        '/test/router.ts',
+        `
+        import { userWithFollowingSchema } from './schema';
+        const outputSchema = userWithFollowingSchema;
+        `,
+        { overwrite: true },
+      );
+
+      const declaration = sourceFile.getVariableDeclaration('outputSchema');
+      const initializer = declaration!.getInitializer()!;
+
+      const result = procedureGenerator.flattenZodSchema(
+        initializer,
+        sourceFile,
+        project,
+        initializer.getText(),
+      );
+
+      // Should have exactly one .extend, not .extend.extend
+      expect(result).toContain('.extend({');
+      expect(result).not.toContain('.extend.extend');
+      expect(result).toContain('isFollowing: z.boolean()');
+      expect(result).toContain('id: z.string()');
+      expect(result).toContain('name: z.string()');
+    });
+
+    it('should flatten z.array of extended schema', () => {
+      project.createSourceFile(
+        '/test/schema.ts',
+        `
+        export const baseSchema = z.object({
+          id: z.string(),
+        });
+
+        export const extendedSchema = baseSchema.extend({
+          extra: z.number(),
+        });
+        `,
+        { overwrite: true },
+      );
+
+      const sourceFile = project.createSourceFile(
+        '/test/router.ts',
+        `
+        import { extendedSchema } from './schema';
+        const arraySchema = z.array(extendedSchema);
+        `,
+        { overwrite: true },
+      );
+
+      const declaration = sourceFile.getVariableDeclaration('arraySchema');
+      const initializer = declaration!.getInitializer()!;
+
+      const result = procedureGenerator.flattenZodSchema(
+        initializer,
+        sourceFile,
+        project,
+        initializer.getText(),
+      );
+
+      expect(result).toContain('z.array(');
+      expect(result).toContain('.extend({');
+      expect(result).not.toContain('.extend.extend');
+      expect(result).toContain('extra: z.number()');
+    });
+
+    it('should handle chained methods after extend', () => {
+      project.createSourceFile(
+        '/test/schema.ts',
+        `
+        export const baseSchema = z.object({ id: z.string() });
+        export const extendedSchema = baseSchema.extend({ name: z.string() }).optional();
+        `,
+        { overwrite: true },
+      );
+
+      const sourceFile = project.createSourceFile(
+        '/test/router.ts',
+        `
+        import { extendedSchema } from './schema';
+        const outputSchema = extendedSchema;
+        `,
+        { overwrite: true },
+      );
+
+      const declaration = sourceFile.getVariableDeclaration('outputSchema');
+      const initializer = declaration!.getInitializer()!;
+
+      const result = procedureGenerator.flattenZodSchema(
+        initializer,
+        sourceFile,
+        project,
+        initializer.getText(),
+      );
+
+      expect(result).toContain('.extend({');
+      expect(result).toContain('.optional()');
+      expect(result).not.toContain('.extend.extend');
+    });
+  });
 });
