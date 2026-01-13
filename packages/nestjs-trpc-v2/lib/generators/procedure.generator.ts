@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ProcedureGeneratorMetadata } from '../interfaces/generator.interface';
+import {
+  ProcedureGeneratorMetadata,
+  SourceFileImportsMap,
+} from '../interfaces/generator.interface';
 import { ProcedureType } from '../trpc.enum';
 import { Project, SourceFile, Node } from 'ts-morph';
 import { ImportsScanner } from '../scanners/imports.scanner';
@@ -44,11 +47,11 @@ export class ProcedureGenerator {
     sourceFile: SourceFile,
     project: Project,
     schema: string,
+    providedImportsMap?: Map<string, SourceFileImportsMap>,
   ): string {
-    const importsMap = this.importsScanner.buildSourceFileImportsMap(
-      sourceFile,
-      project,
-    );
+    const importsMap =
+      providedImportsMap ??
+      this.importsScanner.buildSourceFileImportsMap(sourceFile, project);
     if (Node.isIdentifier(node)) {
       const identifierName = node.getText();
       const identifierDeclaration =
@@ -63,6 +66,7 @@ export class ProcedureGenerator {
             sourceFile,
             project,
             identifierInitializer.getText(),
+            importsMap,
           );
 
           schema = schema.replace(identifierName, identifierSchema);
@@ -82,11 +86,18 @@ export class ProcedureGenerator {
               importsMap,
             );
           } else {
+            // Build a new imports map for the imported source file to resolve its own dependencies
+            const importedImportsMap =
+              this.importsScanner.buildSourceFileImportsMap(
+                importedSourceFile,
+                project,
+              );
             const identifierSchema = this.flattenZodSchema(
               initializer,
               importedSourceFile,
               project,
               initializer.getText(),
+              importedImportsMap,
             );
 
             schema = schema.replace(identifierName, identifierSchema);
@@ -107,6 +118,7 @@ export class ProcedureGenerator {
                 sourceFile,
                 project,
                 propertyText,
+                importsMap,
               ),
             );
           }
@@ -117,7 +129,13 @@ export class ProcedureGenerator {
         const elementText = element.getText();
         schema = schema.replace(
           elementText,
-          this.flattenZodSchema(element, sourceFile, project, elementText),
+          this.flattenZodSchema(
+            element,
+            sourceFile,
+            project,
+            elementText,
+            importsMap,
+          ),
         );
       }
     } else if (Node.isCallExpression(node)) {
@@ -131,12 +149,29 @@ export class ProcedureGenerator {
           sourceFile,
           project,
           expression.getText(),
+          importsMap,
         );
         const propertyName = expression.getName();
         schema = schema.replace(
           expression.getText(),
           `${baseSchema}.${propertyName}`,
         );
+      } else if (Node.isPropertyAccessExpression(expression)) {
+        // Handle method chains like z.array(schema).optional()
+        // The expression is something.optional, we need to recurse into the base if it's a call
+        const baseExpression = expression.getExpression();
+        if (Node.isCallExpression(baseExpression)) {
+          // Recursively process the base call expression (e.g., z.array(schema))
+          const baseText = baseExpression.getText();
+          const flattenedBase = this.flattenZodSchema(
+            baseExpression,
+            sourceFile,
+            project,
+            baseText,
+            importsMap,
+          );
+          schema = schema.replace(baseText, flattenedBase);
+        }
       } else if (!expression.getText().startsWith('z')) {
         this.staticGenerator.addSchemaImports(
           this.appRouterSourceFile,
@@ -149,15 +184,19 @@ export class ProcedureGenerator {
         const argText = arg.getText();
         schema = schema.replace(
           argText,
-          this.flattenZodSchema(arg, sourceFile, project, argText),
+          this.flattenZodSchema(arg, sourceFile, project, argText, importsMap),
         );
       }
     } else if (Node.isPropertyAccessExpression(node)) {
-      schema = this.flattenZodSchema(
-        node.getExpression(),
-        sourceFile,
-        project,
+      schema = schema.replace(
         node.getExpression().getText(),
+        this.flattenZodSchema(
+          node.getExpression(),
+          sourceFile,
+          project,
+          node.getExpression().getText(),
+          importsMap,
+        ),
       );
     }
 
