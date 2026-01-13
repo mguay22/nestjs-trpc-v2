@@ -8,11 +8,9 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"],
       "outputs": []
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"],
       "outputs": [],
       "cache": false
     },
@@ -24,7 +22,7 @@
       "outputs": []
     },
     "check-types": {
-      "dependsOn": ["^check-types"],
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "dev": {
@@ -32,7 +30,12 @@
       "persistent": true
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }
