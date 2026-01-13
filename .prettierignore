@@ -19,3 +19,6 @@ coverage
 # Config files that should not be formatted
 pnpm-workspace.yaml
 .changeset
+
+# MDX content (formatting breaks inline JSX)
+apps/docs/content

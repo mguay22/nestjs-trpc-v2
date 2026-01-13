@@ -103,7 +103,6 @@ We do this by editing our module file and adding the routers to the `providers` 
 While we discussed how to perform data fetching with our adapter, any complete data platform needs a way to modify server-side data as well.
 This can be done by using the right decorator, here is a list of the available procedure decorators:
 
-<br/>
 <Table columns={["Decorator", "Output"]}>
   <Table.Row>
     <Table.Cell>`@Query({ input?: ZodSchema, output?: ZodSchema })`</Table.Cell>
@@ -132,18 +131,13 @@ By default every route will be assigned the `publicProcedure` base, but it is po
     <Table.Cell>`middleware.query()`</Table.Cell>
   </Table.Row>
 </Table>
-You can read more about the implementation in our
-<Link href={'/docs/middlewares'} className="underline">
-  Middlewares Guide
-</Link>
-.
+You can read more about the implementation in our <Link href={'/docs/middlewares'} className="underline">Middlewares Guide</Link>
 
 #### Parameter Decorators
 
 In order to grab the request parameters when defining a route method we can use dedicated decorators, such as @Ctx() or @Input(),
 which are available out of the box. Below is a list of the provided decorators and the plain platform-specific objects they represent.
 
-<br />
 <Table>
   <Table.Row>
     <Table.Cell>`@Options()`</Table.Cell>
